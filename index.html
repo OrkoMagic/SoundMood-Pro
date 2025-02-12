@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MTpro - MoodyTunes</title>
+    <title>SoundMood Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -252,12 +252,12 @@
 </head>
 <body>
     <div class="animated-bg"></div>
-    <div class="logo">MTpro</div>
+    <div class="logo">SMpro</div>
     <div class="language-toggle" onclick="toggleLanguage()" data-en="EN/GR" data-el="GR/EN">EN/GR</div>
 
     <div class="container">
         <div class="header">
-            <span data-en="MoodyTunes Pro" data-el="MoodyTunes Pro">MoodyTunes Pro</span>
+            <span data-en="SoundMood Pro" data-el="SoundMood Pro">SoundMood Pro</span>
         </div>
 
         <div class="mood-question" data-en="What's your mood?" data-el="Ποιά είναι η διάθεσή σου;"></div>
@@ -480,8 +480,8 @@
 
         function shareTo(platform, url) {
             const message = currentLanguage === 'el' ? 
-                `Ανακάλυψα αυτή τη playlist στο Spotify μέσω του MoodyTunes Pro (ανεξάρτητη εφαρμογή): ${url}` : 
-                `Discovered this Spotify playlist via MoodyTunes Pro (independent app): ${url}`;
+                `Ανακάλυψα αυτή τη playlist στο Spotify μέσω του SoundMood Pro (ανεξάρτητη εφαρμογή): ${url}` : 
+                `Discovered this Spotify playlist via SoundMood Pro (independent app): ${url}`;
 
             const shareUrls = {
                 facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
@@ -496,4 +496,4 @@
         updateTextElements();
     </script>
 </body>
-</html>
+</html>   
