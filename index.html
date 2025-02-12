@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MTpro - MoodyTunes</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2A2F4F;
+            --secondary-color: #4E4FEB;
+            --accent-color: #FFD700;
+            --background-dark: #1A1A2E;
+            --text-light: #F5F5F5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--background-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+            background-size: 400% 400%;
+            animation: gradientFlow 15s ease infinite;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .logo {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            z-index: 1000;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 1em;
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+            backdrop-filter: blur(5px);
+        }
+
+        .language-toggle {
+            position: fixed;
+            top: 18px;
+            right: 12px;
+            z-index: 1000;
+            background: rgba(255,255,255,0.1);
+            padding: 3px 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.8em;
+            backdrop-filter: blur(5px);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 12px;
+            flex-grow: 1;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 0.8rem;
+            border-radius: 12px;
+            margin: 50px 0 15px;
+            text-align: center;
+            font-size: 0.95em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mood-question {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            color: var(--accent-color);
+        }
+
+        .mood-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .mood-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            color: var(--text-light);
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            min-height: 60px;
+            backdrop-filter: blur(5px);
+            position: relative;
+        }
+
+        .mood-btn:active {
+            transform: scale(0.95);
+            background: var(--secondary-color);
+        }
+
+        .mood-btn i {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .mood-btn:hover i {
+            transform: rotate(15deg);
+        }
+
+        .input-area {
+            margin: 15px 0;
+        }
+
+        .input-box {
+            display: flex;
+            gap: 8px;
+        }
+
+        .genre-input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-light);
+            font-size: 0.9em;
+            backdrop-filter: blur(5px);
+        }
+
+        .send-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            background: var(--secondary-color);
+            color: white;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: transform 0.2s ease;
+        }
+
+        .playlist-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            animation: slideIn 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .spotify-link {
+            display: block;
+            margin: 8px 0;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.85em;
+            transition: letter-spacing 0.3s ease;
+        }
+
+        .spotify-link:hover {
+            letter-spacing: 1px;
+        }
+
+        .share-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .share-btn {
+            flex: 1 1 45%;
+            padding: 6px;
+            border-radius: 6px;
+            border: none;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            min-width: 90px;
+            font-size: 0.8em;
+            transition: transform 0.2s ease;
+        }
+
+        .fa-tiktok {
+            filter: drop-shadow(2px 0px 0px #FD3E3E) drop-shadow(-2px -2px 0px #4DE8F4);
+        }
+
+        .footer-note {
+            font-size: 0.7em;
+            line-height: 1.4;
+            margin-top: 10px;
+            text-align: center;
+            padding: 20px;
+            color: #888;
+        }
+
+        .disclaimer {
+            font-size: 0.6em;
+            color: #666;
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="logo">MTpro</div>
+    <div class="language-toggle" onclick="toggleLanguage()" data-en="EN/GR" data-el="GR/EN">EN/GR</div>
+
+    <div class="container">
+        <div class="header">
+            <span data-en="MoodyTunes Pro" data-el="MoodyTunes Pro">MoodyTunes Pro</span>
+        </div>
+
+        <div class="mood-question" data-en="What's your mood?" data-el="Ποιά είναι η διάθεσή σου;"></div>
+
+        <div class="mood-grid">
+            <button class="mood-btn" onclick="selectMood('love')" data-en="Love" data-el="Αγάπη">
+                <i class="fas fa-heart"></i>
+                <span>Αγάπη</span>
+            </button>
+            
+            <button class="mood-btn" onclick="selectMood('happy')" data-en="Happy" data-el="Χαρά">
+                <i class="fas fa-laugh-beam"></i>
+                <span>Χαρά</span>
+            </button>
+            
+            <button class="mood-btn" onclick="selectMood('sad')" data-en="Sad" data-el="Λύπη">
+                <i class="fas fa-sad-tear"></i>
+                <span>Λύπη</span>
+            </button>
+            
+            <button class="mood-btn" onclick="selectMood('chill')" data-en="Chill" data-el="Χαλαρά">
+                <i class="fas fa-moon"></i>
+                <span>Χαλαρά</span>
+            </button>
+            
+            <button class="mood-btn" onclick="selectMood('party')" data-en="Party" data-el="Πάρτι">
+                <i class="fas fa-glass-cheers"></i>
+                <span>Πάρτι</span>
+            </button>
+            
+            <button class="mood-btn" onclick="selectMood('rainy')" data-en="Rainy Days" data-el="Βροχερές Μέρες">
+                <i class="fas fa-cloud-rain"></i>
+                <span>Βροχερές Μέρες</span>
+            </button>
+            
+            <button class="mood-btn" onclick="selectMood('workout')" data-en="Workout" data-el="Γυμναστική">
+                <i class="fas fa-dumbbell"></i>
+                <span>Γυμναστική</span>
+            </button>
+            
+            <button class="mood-btn" onclick="selectMood('nostalgic')" data-en="Nostalgic" data-el="Νοσταλγία">
+                <i class="fas fa-history"></i>
+                <span>Νοσταλγία</span>
+            </button>
+            
+            <button class="mood-btn" onclick="selectMood('zen')" data-en="Zen" data-el="Διαλογισμός">
+                <i class="fas fa-spa"></i>
+                <span>Διαλογισμός</span>
+            </button>
+            
+            <button class="mood-btn" onclick="selectMood('breakup')" data-en="Break Up" data-el="Χωρισμός">
+                <i class="fas fa-heart-broken"></i>
+                <span>Χωρισμός</span>
+            </button>
+        </div>
+
+        <div class="input-area">
+            <div class="input-box">
+                <input type="text" class="genre-input" 
+                       placeholder="Select music genre or your favorite artist!"
+                       data-en="Select music genre or your favorite artist!"
+                       data-el="Επιλέξτε είδος μουσικής ή αγαπημένο καλλιτέχνη!">
+                <button class="send-btn" onclick="handleCustomGenre()" 
+                        data-en="Mood" data-el="Διάθεση">Mood</button>
+            </div>
+        </div>
+
+        <div id="playlistContainer"></div>
+
+        <div class="footer-note">
+            Developed by Costas Chatzisalis © 2025<br>
+            Contact: kouroupa82@gmail.com<br>
+            <a href="https://ko-fi.com/OrkoMagic" 
+               target="_blank" 
+               style="margin-top:10px;display:inline-block;">
+              <img src="https://cdn.ko-fi.com/cdn/kofi3.png" 
+                   alt="Buy Me a Coffee" 
+                   style="height:40px;">
+            </a>
+          </div>
+
+        <div class="disclaimer" 
+             data-en="This application is not affiliated with Spotify AB. Data is used in accordance with Spotify's terms."
+             data-el="Αυτή η εφαρμογή δεν συνδέεται με το Spotify AB. Τα δεδομένα χρησιμοποιούνται βάσει των όρων του Spotify.">
+        </div>
+    </div>
+
+    <script>
+        let currentLanguage = 'en';
+
+        const playlists = {
+            love: {
+                en: { title: "Love Songs", url: "https://open.spotify.com/playlist/37i9dQZF1DX50QitC6Oqtn" },
+                el: { title: "Τραγούδια Αγάπης", url: "https://open.spotify.com/playlist/37i9dQZF1DX50QitC6Oqtn" }
+            },
+            happy: {
+                en: { title: "Happy Hits", url: "https://open.spotify.com/playlist/37i9dQZF1DXdPec7aLTmlC" },
+                el: { title: "Χαρούμενα Τραγούδια", url: "https://open.spotify.com/playlist/37i9dQZF1DXdPec7aLTmlC" }
+            },
+            sad: {
+                en: { title: "Sad Moments", url: "https://open.spotify.com/playlist/37i9dQZF1DX7qK8ma5wgG1" },
+                el: { title: "Λυπημένα Τραγούδια", url: "https://open.spotify.com/playlist/37i9dQZF1DX7qK8ma5wgG1" }
+            },
+            chill: {
+                en: { title: "Chill Vibes", url: "https://open.spotify.com/playlist/37i9dQZF1DX4WYpdgoIcn6" },
+                el: { title: "Χαλαρά Τραγούδια", url: "https://open.spotify.com/playlist/37i9dQZF1DX4WYpdgoIcn6" }
+            },
+            party: {
+                en: { title: "Party Mix", url: "https://open.spotify.com/playlist/37i9dQZF1DXaXB8fQg7xif" },
+                el: { title: "Πάρτι Mix", url: "https://open.spotify.com/playlist/37i9dQZF1DXaXB8fQg7xif" }
+            },
+            rainy: {
+                en: { title: "Rainy Days", url: "https://open.spotify.com/playlist/37i9dQZF1DXbvABJXBIyiY" },
+                el: { title: "Βροχερές Μέρες", url: "https://open.spotify.com/playlist/37i9dQZF1DXbvABJXBIyiY" }
+            },
+            workout: {
+                en: { title: "Workout Energy", url: "https://open.spotify.com/playlist/37i9dQZF1DX76Wlfdnj7AP" },
+                el: { title: "Γυμναστική", url: "https://open.spotify.com/playlist/37i9dQZF1DX76Wlfdnj7AP" }
+            },
+            nostalgic: {
+                en: { title: "Nostalgic Hits", url: "https://open.spotify.com/playlist/37i9dQZF1DX4UtSsGT1Sbe" },
+                el: { title: "Νοσταλγία", url: "https://open.spotify.com/playlist/37i9dQZF1DX4UtSsGT1Sbe" }
+            },
+            zen: {
+                en: { title: "Zen Meditation", url: "https://open.spotify.com/playlist/37i9dQZF1DWZqd5JICZI0u" },
+                el: { title: "Διαλογισμός", url: "https://open.spotify.com/playlist/37i9dQZF1DWZqd5JICZI0u" }
+            },
+            breakup: {
+                en: { title: "Breakup Songs", url: "https://open.spotify.com/playlist/37i9dQZF1DXbrUpGvoi3TS" },
+                el: { title: "Χωρισμός", url: "https://open.spotify.com/playlist/37i9dQZF1DXbrUpGvoi3TS" }
+            }
+        };
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'el' ? 'en' : 'el';
+            updateTextElements();
+        }
+
+        function updateTextElements() {
+            document.querySelectorAll('[data-en], [data-el]').forEach(element => {
+                const text = element.getAttribute(`data-${currentLanguage}`);
+                if(text) {
+                    if(element.tagName === 'INPUT') {
+                        element.placeholder = text;
+                    } else if(element.className === 'disclaimer') {
+                        element.innerHTML = text;
+                    } else {
+                        element.textContent = text;
+                    }
+                }
+            });
+        }
+
+        function selectMood(moodType) {
+            if (!playlists[moodType]) {
+                alert(currentLanguage === 'el' ? 
+                    "Δεν βρέθηκε playlist για αυτή τη διάθεση" : 
+                    "Playlist not found for this mood");
+                return;
+            }
+            const playlist = playlists[moodType][currentLanguage];
+            showPlaylist(playlist);
+        }
+
+        function handleCustomGenre() {
+            const input = document.querySelector('.genre-input');
+            const searchTerm = input.value.trim().toLowerCase();
+            
+            const searchMap = {
+                'house': { el: 'House Μουσική', en: 'House Music', url: 'https://open.spotify.com/playlist/37i9dQZF1DXa8NOEUWPn9W' },
+                'rock': { el: 'Ροκ Κλασικά', en: 'Rock Classics', url: 'https://open.spotify.com/playlist/37i9dQZF1DWXRqgorJj26U' }
+            };
+
+            const found = Object.entries(searchMap).find(([key]) => 
+                searchTerm.includes(key.toLowerCase())
+            );
+
+            if(found) {
+                showPlaylist({
+                    title: found[1][currentLanguage],
+                    url: found[1].url
+                });
+            } else {
+                showPlaylist({
+                    title: currentLanguage === 'el' ? 
+                        `Αναζήτηση: ${searchTerm}` : 
+                        `Search: ${searchTerm}`,
+                    url: `https://open.spotify.com/search/${encodeURIComponent(searchTerm)}`
+                });
+            }
+            input.value = '';
+        }
+
+        function showPlaylist(playlist) {
+            const container = document.getElementById('playlistContainer');
+            container.innerHTML = `
+                <div class="playlist-card">
+                    <h3>${playlist.title}</h3>
+                    <a href="${playlist.url}" class="spotify-link" target="_blank">
+                        <i class="fab fa-spotify"></i> 
+                        ${currentLanguage === 'el' ? 'Ανοίξτε στο Spotify' : 'Open in Spotify'}
+                    </a>
+                    <div class="share-buttons">
+                        <button class="share-btn" onclick="shareTo('facebook', '${playlist.url}')">
+                            <i class="fab fa-facebook"></i> Facebook
+                        </button>
+                        <button class="share-btn" onclick="shareTo('instagram', '${playlist.url}')">
+                            <i class="fab fa-instagram"></i> Instagram
+                        </button>
+                        <button class="share-btn" onclick="shareTo('tiktok', '${playlist.url}')">
+                            <i class="fab fa-tiktok"></i> TikTok
+                        </button>
+                        <button class="share-btn" onclick="shareTo('whatsapp', '${playlist.url}')">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function shareTo(platform, url) {
+            const message = currentLanguage === 'el' ? 
+                `Ανακάλυψα αυτή τη playlist στο Spotify μέσω του MoodyTunes Pro (ανεξάρτητη εφαρμογή): ${url}` : 
+                `Discovered this Spotify playlist via MoodyTunes Pro (independent app): ${url}`;
+
+            const shareUrls = {
+                facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+                instagram: `https://www.instagram.com/?url=${encodeURIComponent(url)}`,
+                tiktok: `https://www.tiktok.com/share?url=${encodeURIComponent(url)}`,
+                whatsapp: `https://wa.me/?text=${encodeURIComponent(message)}`
+            };
+
+            window.open(shareUrls[platform], '_blank');
+        }
+
+        updateTextElements();
+    </script>
+</body>
+</html>
