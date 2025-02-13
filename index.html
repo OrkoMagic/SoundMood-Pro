@@ -3,8 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- SEO / META TAGS -->
     <title>SoundMood Pro</title>
+    <meta name="description" content="Περιγραφή της εφαρμογής SoundMood Pro">
+    <meta name="keywords" content="SoundMood Pro, mood, playlist, spotify">
+    <meta property="og:title" content="SoundMood Pro" />
+    <meta property="og:description" content="Ανακάλυψε την τέλεια μουσική διάθεση!" />
+    <meta property="og:image" content="https://soundmoodpro.netlify.app/logo.png" />
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <style>
         :root {
             --primary-color: #2A2F4F;
@@ -337,7 +346,7 @@
                    alt="Buy Me a Coffee" 
                    style="height:40px;">
             </a>
-          </div>
+        </div>
 
         <div class="disclaimer" 
              data-en="This application is not affiliated with Spotify AB. Data is used in accordance with Spotify's terms."
@@ -399,10 +408,10 @@
         function updateTextElements() {
             document.querySelectorAll('[data-en], [data-el]').forEach(element => {
                 const text = element.getAttribute(`data-${currentLanguage}`);
-                if(text) {
-                    if(element.tagName === 'INPUT') {
+                if (text) {
+                    if (element.tagName === 'INPUT') {
                         element.placeholder = text;
-                    } else if(element.className === 'disclaimer') {
+                    } else if (element.className === 'disclaimer') {
                         element.innerHTML = text;
                     } else {
                         element.textContent = text;
@@ -435,7 +444,7 @@
                 searchTerm.includes(key.toLowerCase())
             );
 
-            if(found) {
+            if (found) {
                 showPlaylist({
                     title: found[1][currentLanguage],
                     url: found[1].url
@@ -496,4 +505,4 @@
         updateTextElements();
     </script>
 </body>
-</html>   
+</html>
