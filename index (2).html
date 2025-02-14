@@ -4,16 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- SEO / META TAGS -->
-    <title>SoundMood Pro</title>
-    <meta name="description" content="Περιγραφή της εφαρμογής SoundMood Pro">
-    <meta name="keywords" content="SoundMood Pro, mood, playlist, spotify">
-    <meta property="og:title" content="SoundMood Pro" />
-    <meta property="og:description" content="Ανακάλυψε την τέλεια μουσική διάθεση!" />
-    <meta property="og:image" content="https://soundmoodpro.netlify.app/logo.png" />
+    <!-- ================ SEO & META ================ -->
+    <title>SoundMood Pro - Μουσική για Κάθε Διάθεση</title>
+    <meta name="description" content="Δημιουργήστε προσωπικές playlists στο Spotify ανάλογα με τη διάθεσή σας. Ιδανικό για χαλάρωση, γυμναστική, πάρτι και πολλές άλλες καταστάσεις!">
+    <meta name="keywords" content="μουσική διάθεση, Spotify playlist, δημιουργία playlist, SoundMood Pro, ελληνική εφαρμογή μουσικής">
+    
+    <!-- Open Graph/Social Media -->
+    <meta property="og:title" content="SoundMood Pro - Μουσική για Κάθε Διάθεση">
+    <meta property="og:description" content="Ανακαλύψτε την τέλεια μουσική για κάθε στιγμή με βάση τη διάθεσή σας!">
+    <meta property="og:image" content="https://soundmoodpro.netlify.app/images/social-preview.png">
+    <meta property="og:url" content="https://soundmoodpro.netlify.app">
+    
+    <!-- Google Search Console -->
+    <meta name="google-site-verification" content="XXXXXXXXXXXXX_YOUR_CODE_XXXXXXXXXXX">
 
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "SoundMood Pro",
+      "description": "Δημιουργία προσωπικών playlists στο Spotify βασισμένων στη διάθεση",
+      "applicationCategory": "Music",
+      "operatingSystem": "Web",
+      "url": "https://soundmoodpro.netlify.app",
+      "image": "https://soundmoodpro.netlify.app/images/logo.png"
+    }
+    </script>
+  
+    <!-- Για το brand -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Brand",
+      "logo": "https://soundmoodpro.netlify.app/images/logo.png",
+      "name": "SoundMood Pro"
+    }
+    </script>
+
+    <!-- ================ STYLES & FONTS ================ -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
     <style>
         :root {
             --primary-color: #2A2F4F;
@@ -72,6 +102,11 @@
             color: var(--accent-color);
             border: 2px solid var(--accent-color);
             backdrop-filter: blur(5px);
+        }
+
+        .logo img {
+            width: 120px;
+            height: auto;
         }
 
         .language-toggle {
@@ -257,11 +292,29 @@
             padding: 10px;
             border-top: 1px solid rgba(255,255,255,0.1);
         }
+
+        /* Responsive για κινητά */
+        @media (max-width: 600px) {
+            .mood-grid {
+                grid-template-columns: 1fr;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="animated-bg"></div>
-    <div class="logo">SMpro</div>
+    
+    <div class="logo">
+        <!-- Αφαιρέθηκε το περιττό κείμενο και διατηρείται μόνο το <img> -->
+        <img 
+          src="images/logo.png" 
+          alt="SoundMood Pro - Δημιουργία Playlists" 
+          style="width:220px; display:block; margin:20px auto;"
+        >
+    </div>
+
     <div class="language-toggle" onclick="toggleLanguage()" data-en="EN/GR" data-el="GR/EN">EN/GR</div>
 
     <div class="container">
@@ -272,52 +325,52 @@
         <div class="mood-question" data-en="What's your mood?" data-el="Ποιά είναι η διάθεσή σου;"></div>
 
         <div class="mood-grid">
-            <button class="mood-btn" onclick="selectMood('love')" data-en="Love" data-el="Αγάπη">
+            <button class="mood-btn" onclick="selectMood('love')" data-en="Love" data-el="Αγάπη" aria-label="Επιλογή διάθεσης: Αγάπη">
                 <i class="fas fa-heart"></i>
                 <span>Αγάπη</span>
             </button>
             
-            <button class="mood-btn" onclick="selectMood('happy')" data-en="Happy" data-el="Χαρά">
+            <button class="mood-btn" onclick="selectMood('happy')" data-en="Happy" data-el="Χαρά" aria-label="Επιλογή διάθεσης: Χαρά">
                 <i class="fas fa-laugh-beam"></i>
                 <span>Χαρά</span>
             </button>
             
-            <button class="mood-btn" onclick="selectMood('sad')" data-en="Sad" data-el="Λύπη">
+            <button class="mood-btn" onclick="selectMood('sad')" data-en="Sad" data-el="Λύπη" aria-label="Επιλογή διάθεσης: Λύπη">
                 <i class="fas fa-sad-tear"></i>
                 <span>Λύπη</span>
             </button>
             
-            <button class="mood-btn" onclick="selectMood('chill')" data-en="Chill" data-el="Χαλαρά">
+            <button class="mood-btn" onclick="selectMood('chill')" data-en="Chill" data-el="Χαλαρά" aria-label="Επιλογή διάθεσης: Χαλαρά">
                 <i class="fas fa-moon"></i>
                 <span>Χαλαρά</span>
             </button>
             
-            <button class="mood-btn" onclick="selectMood('party')" data-en="Party" data-el="Πάρτι">
+            <button class="mood-btn" onclick="selectMood('party')" data-en="Party" data-el="Πάρτι" aria-label="Επιλογή διάθεσης: Πάρτι">
                 <i class="fas fa-glass-cheers"></i>
                 <span>Πάρτι</span>
             </button>
             
-            <button class="mood-btn" onclick="selectMood('rainy')" data-en="Rainy Days" data-el="Βροχερές Μέρες">
+            <button class="mood-btn" onclick="selectMood('rainy')" data-en="Rainy Days" data-el="Βροχερές Μέρες" aria-label="Επιλογή διάθεσης: Βροχερές Μέρες">
                 <i class="fas fa-cloud-rain"></i>
                 <span>Βροχερές Μέρες</span>
             </button>
             
-            <button class="mood-btn" onclick="selectMood('workout')" data-en="Workout" data-el="Γυμναστική">
+            <button class="mood-btn" onclick="selectMood('workout')" data-en="Workout" data-el="Γυμναστική" aria-label="Επιλογή διάθεσης: Γυμναστική">
                 <i class="fas fa-dumbbell"></i>
                 <span>Γυμναστική</span>
             </button>
             
-            <button class="mood-btn" onclick="selectMood('nostalgic')" data-en="Nostalgic" data-el="Νοσταλγία">
+            <button class="mood-btn" onclick="selectMood('nostalgic')" data-en="Nostalgic" data-el="Νοσταλγία" aria-label="Επιλογή διάθεσης: Νοσταλγία">
                 <i class="fas fa-history"></i>
                 <span>Νοσταλγία</span>
             </button>
             
-            <button class="mood-btn" onclick="selectMood('zen')" data-en="Zen" data-el="Διαλογισμός">
+            <button class="mood-btn" onclick="selectMood('zen')" data-en="Zen" data-el="Διαλογισμός" aria-label="Επιλογή διάθεσης: Διαλογισμός">
                 <i class="fas fa-spa"></i>
                 <span>Διαλογισμός</span>
             </button>
             
-            <button class="mood-btn" onclick="selectMood('breakup')" data-en="Break Up" data-el="Χωρισμός">
+            <button class="mood-btn" onclick="selectMood('breakup')" data-en="Break Up" data-el="Χωρισμός" aria-label="Επιλογή διάθεσης: Χωρισμός">
                 <i class="fas fa-heart-broken"></i>
                 <span>Χωρισμός</span>
             </button>
@@ -325,12 +378,21 @@
 
         <div class="input-area">
             <div class="input-box">
-                <input type="text" class="genre-input" 
-                       placeholder="Select music genre or your favorite artist!"
-                       data-en="Select music genre or your favorite artist!"
-                       data-el="Επιλέξτε είδος μουσικής ή αγαπημένο καλλιτέχνη!">
-                <button class="send-btn" onclick="handleCustomGenre()" 
-                        data-en="Mood" data-el="Διάθεση">Mood</button>
+                <input 
+                  type="text" 
+                  class="genre-input" 
+                  placeholder="Select music genre or your favorite artist!"
+                  data-en="Select music genre or your favorite artist!"
+                  data-el="Επιλέξτε είδος μουσικής ή αγαπημένο καλλιτέχνη!"
+                >
+                <button 
+                  class="send-btn" 
+                  onclick="handleCustomGenre()" 
+                  data-en="Mood" 
+                  data-el="Διάθεση"
+                >
+                  Mood
+                </button>
             </div>
         </div>
 
@@ -341,16 +403,18 @@
             Contact: kouroupa82@gmail.com<br>
             <a href="https://ko-fi.com/OrkoMagic" 
                target="_blank" 
+               rel="noopener noreferrer"
+               aria-label="Υποστήριξη μέσω Ko-fi"
                style="margin-top:10px;display:inline-block;">
               <img src="https://cdn.ko-fi.com/cdn/kofi3.png" 
-                   alt="Buy Me a Coffee" 
+                   alt="Υποστήριξη SoundMood Pro μέσω Ko-fi"
                    style="height:40px;">
             </a>
         </div>
 
         <div class="disclaimer" 
-             data-en="This application is not affiliated with Spotify AB. Data is used in accordance with Spotify's terms."
-             data-el="Αυτή η εφαρμογή δεν συνδέεται με το Spotify AB. Τα δεδομένα χρησιμοποιούνται βάσει των όρων του Spotify.">
+             data-en="This app uses Spotify links under their <a href='https://www.spotify.com/legal/end-user-agreement/' target='_blank' rel='noopener'>Terms</a>"
+             data-el="Η εφαρμογή χρησιμοποιεί συνδέσμους Spotify σύμφωνα με τους <a href='https://www.spotify.com/legal/end-user-agreement/' target='_blank' rel='noopener'>Όρους Χρήσης</a>">
         </div>
     </div>
 
@@ -451,9 +515,9 @@
                 });
             } else {
                 showPlaylist({
-                    title: currentLanguage === 'el' ? 
-                        `Αναζήτηση: ${searchTerm}` : 
-                        `Search: ${searchTerm}`,
+                    title: currentLanguage === 'el' 
+                        ? `Αναζήτηση: ${searchTerm}` 
+                        : `Search: ${searchTerm}`,
                     url: `https://open.spotify.com/search/${encodeURIComponent(searchTerm)}`
                 });
             }
@@ -465,21 +529,21 @@
             container.innerHTML = `
                 <div class="playlist-card">
                     <h3>${playlist.title}</h3>
-                    <a href="${playlist.url}" class="spotify-link" target="_blank">
+                    <a href="${playlist.url}" class="spotify-link" target="_blank" rel="noopener noreferrer">
                         <i class="fab fa-spotify"></i> 
                         ${currentLanguage === 'el' ? 'Ανοίξτε στο Spotify' : 'Open in Spotify'}
                     </a>
                     <div class="share-buttons">
-                        <button class="share-btn" onclick="shareTo('facebook', '${playlist.url}')">
+                        <button class="share-btn" onclick="shareTo('facebook', '${playlist.url}')" aria-label="Κοινήχηση στο Facebook">
                             <i class="fab fa-facebook"></i> Facebook
                         </button>
-                        <button class="share-btn" onclick="shareTo('instagram', '${playlist.url}')">
+                        <button class="share-btn" onclick="shareTo('instagram', '${playlist.url}')" aria-label="Κοινήχηση στο Instagram">
                             <i class="fab fa-instagram"></i> Instagram
                         </button>
-                        <button class="share-btn" onclick="shareTo('tiktok', '${playlist.url}')">
+                        <button class="share-btn" onclick="shareTo('tiktok', '${playlist.url}')" aria-label="Κοινήχηση στο TikTok">
                             <i class="fab fa-tiktok"></i> TikTok
                         </button>
-                        <button class="share-btn" onclick="shareTo('whatsapp', '${playlist.url}')">
+                        <button class="share-btn" onclick="shareTo('whatsapp', '${playlist.url}')" aria-label="Κοινήχηση στο WhatsApp">
                             <i class="fab fa-whatsapp"></i> WhatsApp
                         </button>
                     </div>
@@ -488,9 +552,9 @@
         }
 
         function shareTo(platform, url) {
-            const message = currentLanguage === 'el' ? 
-                `Ανακάλυψα αυτή τη playlist στο Spotify μέσω του SoundMood Pro (ανεξάρτητη εφαρμογή): ${url}` : 
-                `Discovered this Spotify playlist via SoundMood Pro (independent app): ${url}`;
+            const message = currentLanguage === 'el' 
+                ? `Ανακάλυψα αυτή τη playlist στο Spotify μέσω του SoundMood Pro (ανεξάρτητη εφαρμογή): ${url}`
+                : `Discovered this Spotify playlist via SoundMood Pro (independent app): ${url}`;
 
             const shareUrls = {
                 facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
@@ -502,6 +566,7 @@
             window.open(shareUrls[platform], '_blank');
         }
 
+        // Αρχικοποίηση κειμένων (EN ως προεπιλογή)
         updateTextElements();
     </script>
 </body>

@@ -1,83 +1,57 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    text-align: center;
+.playlist-section {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px;
   }
   
-  .login-section {
-    margin-top: 20px;
+  .logo {
+    width: 220px;
+    display: block;
+    margin: 20px auto;
+    transition: transform 0.3s;
   }
   
-  button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
+  .logo:hover {
+    transform: scale(1.05);
   }
   
-  button:active {
-    background-color: #45a049;
+  .mood-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 40px 0;
   }
   
   .mood-btn {
-    background-color: #4CAF50;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin: 5px;
-    transition: background-color 0.3s;
-  }
-  
-  .mood-btn:active {
-    background-color: #45a049;
-  }
-  
-  .mood-btn#partyBtn {
-    background-color: #4CAF50;
-    position: relative;
-    margin-top: 20px;
-    width: 100%;
-    max-width: 300px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  .mood-btn:active {
-    background-color: #45a049;
-  }
-  
-  .mood-btn#partyBtn:active {
-    background-color: #45a049;
-  }
-  
-  .mood-btn#partyBtn {
-    background-color: #4CAF50;
+    background: linear-gradient(145deg, #2ecc71, #27ae60);
     color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: all 0.3s;
   }
   
-  .mood-btn:active {
-    background-color: #45a049;
+  .mood-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
   }
   
-  input[type="text"] {
-    padding: 10px;
-    width: 80%;
-    max-width: 300px;
-    margin-top: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+  .create-btn {
+    background: linear-gradient(145deg, #e74c3c, #c0392b);
+    color: white;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: block;
+    margin: 30px auto;
   }
   
-  input[type="text"]:focus {
-    border-color: #4CAF50;
+  .create-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(231,76,60,0.3);
   }
-  
-  input[type="text"], button {
-    font-size: 16px;
-  }
-  
