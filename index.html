@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="el">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- ================ SEO & META ================ -->
+    
+    <!-- ΤΙΤΛΟΣ & SEO -->
     <title>SoundMood Pro - Μουσική για Κάθε Διάθεση</title>
     <meta name="description" content="Δημιουργήστε προσωπικές playlists στο Spotify ανάλογα με τη διάθεσή σας. Ιδανικό για χαλάρωση, γυμναστική, πάρτι και πολλές άλλες καταστάσεις!">
     <meta name="keywords" content="μουσική διάθεση, Spotify playlist, δημιουργία playlist, SoundMood Pro, ελληνική εφαρμογή μουσικής">
@@ -12,11 +10,22 @@
     <!-- Open Graph/Social Media -->
     <meta property="og:title" content="SoundMood Pro - Μουσική για Κάθε Διάθεση">
     <meta property="og:description" content="Ανακαλύψτε την τέλεια μουσική για κάθε στιγμή με βάση τη διάθεσή σας!">
-    <meta property="og:image" content="https://soundmoodpro.netlify.app/images/social-preview.png">
-    <meta property="og:url" content="https://soundmoodpro.netlify.app">
-    
-    <!-- Google Search Console -->
+    <meta property="og:image" content="https://soundmood-pro.netlify.app/assets/images/social-preview.png">
+    <meta property="og:url" content="https://soundmood-pro.netlify.app">
+    <meta property="og:type" content="website">
+
+    <!-- Google Search Console Verification -->
     <meta name="google-site-verification" content="XXXXXXXXXXXXX_YOUR_CODE_XXXXXXXXXXX">
+
+    <!-- SPOTIFY SDK -->
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    
+    <!-- STYLES -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 
     <!-- Schema.org Structured Data -->
     <script type="application/ld+json">
@@ -25,10 +34,14 @@
       "@type": "WebApplication",
       "name": "SoundMood Pro",
       "description": "Δημιουργία προσωπικών playlists στο Spotify βασισμένων στη διάθεση",
-      "applicationCategory": "Music",
+      "applicationCategory": "MusicApplication",
       "operatingSystem": "Web",
-      "url": "https://soundmoodpro.netlify.app",
-      "image": "https://soundmoodpro.netlify.app/images/logo.png"
+      "url": "https://soundmood-pro.netlify.app",
+      "image": "https://soundmood-pro.netlify.app/assets/images/logo.png",
+      "author": {
+        "@type": "Person",
+        "name": "OrkoMagic"
+      }
     }
     </script>
   
@@ -37,10 +50,11 @@
     {
       "@context": "https://schema.org",
       "@type": "Brand",
-      "logo": "https://soundmoodpro.netlify.app/images/logo.png",
+      "logo": "https://soundmood-pro.netlify.app/assets/images/logo.png",
       "name": "SoundMood Pro"
     }
     </script>
+</head>
 
     <!-- ================ STYLES & FONTS ================ -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -105,7 +119,7 @@
         }
 
         .logo img {
-            width: 120px;
+            width: 200px;
             height: auto;
         }
 
@@ -307,11 +321,10 @@
     <div class="animated-bg"></div>
     
     <div class="logo">
-        <!-- Αφαιρέθηκε το περιττό κείμενο και διατηρείται μόνο το <img> -->
         <img 
-          src="images/logo.png" 
-          alt="SoundMood Pro - Δημιουργία Playlists" 
-          style="width:220px; display:block; margin:20px auto;"
+            src="./images/logo.png" 
+            alt="SoundMood Pro" 
+            class="main-logo"
         >
     </div>
 
