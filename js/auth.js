@@ -1,11 +1,18 @@
-// Φορτώστε τις μεταβλητές περιβάλλοντος
 require('dotenv').config();
+
+const allowedRedirects = ['https://soundmood-pro.netlify.app', 'https://your-approved-url.com'];
 
 document.getElementById('spotifyLogin').addEventListener('click', () => {
   const clientId = process.env.SPOTIFY_CLIENT_ID;
   const redirectUri = process.env.SPOTIFY_REDIRECT_URI; // Ensure this matches the registered URI in the Spotify Developer Dashboard
-  const scopes = 'user-read-private user-read-email';
 
+  // Validate the redirect URI
+  if (!allowedRedirects.includes(redirectUri)) {
+    console.error('Invalid redirect URI');
+    return;
+  }
+
+  const scopes = 'user-read-private user-read-email';
   const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&response_type=token&show_dialog=true`;
 
   window.location.href = authUrl;
@@ -17,15 +24,16 @@ window.addEventListener('load', () => {
   const accessToken = params.get('access_token');
 
   if (accessToken) {
-      fetch('https://api.spotify.com/v1/me', {
-          headers: {
-              'Authorization': `Bearer ${accessToken}`
-          }
-      })
-      .then(response => response.json())
-      .then(data => {
-          document.querySelector('#spotifyLogin span').textContent = `${data.display_name}`;
-          document.querySelector('#spotifyLogin').disabled = true;
-      })
-      .catch(error => console.error('Error:', error));
+    fetch('https://api.spotify.com/v1/me', {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      document.querySelector('#spotifyLogin span').textContent = `${data.display_name}`;
+      document.querySelector('#spotifyLogin').disabled = true;
+    })
+    .catch(error => console.error('Error:', error));
   }
+});
