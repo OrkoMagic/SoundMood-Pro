@@ -1,9 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- ΤΙΤΛΟΣ & SEO -->
     <title>SoundMood Pro - Μουσική για Κάθε Διάθεση</title>
+    <!-- STYLES -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <head>
     <meta name="description" content="Δημιουργήστε προσωπικές playlists στο Spotify ανάλογα με τη διάθεσή σας. Ιδανικό για χαλάρωση, γυμναστική, πάρτι και πολλές άλλες καταστάσεις!">
     <meta name="keywords" content="μουσική διάθεση, Spotify playlist, δημιουργία playlist, SoundMood Pro, ελληνική εφαρμογή μουσικής">
     
@@ -17,13 +23,16 @@
     <!-- Google Search Console Verification -->
     <meta name="google-site-verification" content="XXXXXXXXXXXXX_YOUR_CODE_XXXXXXXXXXX">
 
+    <!-- Ορισμός του callback που απαιτείται από το Spotify SDK -->
+    <script>
+      window.onSpotifyWebPlaybackSDKReady = () => {
+          // Callback required by the Spotify SDK. Μπορεί να παραμείνει κενός.
+      };
+    </script>
+    
     <!-- SPOTIFY SDK -->
     <script src="https://sdk.scdn.co/spotify-player.js"></script>
-    
-    <!-- STYLES -->
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+
     <!-- FONT -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 
@@ -54,8 +63,7 @@
       "name": "SoundMood Pro"
     }
     </script>
-</head>
-
+    
     <!-- ================ STYLES & FONTS ================ -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -316,6 +324,8 @@
             }
         }
     </style>
+      <!-- Import του style.css -->
+      <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="animated-bg"></div>
@@ -582,11 +592,10 @@
 
             window.open(shareUrls[platform], '_blank');
         }
-
-        // Αρχικοποίηση κειμένων (EN ως προεπιλογή)
-        updateTextElements();
+    // Αρχικοποίηση κειμένων (EN ως προεπιλογή)
+    updateTextElements();
     </script>
 
-    <script src="auth.js"></script>
+<script src="js/auth.js" defer></script>
 </body>
 </html>
