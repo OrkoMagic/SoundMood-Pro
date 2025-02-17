@@ -348,15 +348,18 @@
 
     <div class="language-toggle" onclick="toggleLanguage()" data-en="EN/GR" data-el="GR/EN">EN/GR</div>
 
+    <!-- Προστέθηκε ξεχωριστό container για το login -->
+    <div id="loginContainer" style="display: none;">
+        <button id="spotifyLogin" class="mood-btn">
+            <i class="fab fa-spotify"></i>
+            <span data-en="Connect Spotify" data-el="Σύνδεση Spotify">Σύνδεση Spotify</span>
+        </button>
+    </div>
+
     <div class="container">
         <div class="header">
-            <button id="spotifyLogin" class="mood-btn" style="margin-bottom: 20px;">
-                <i class="fab fa-spotify"></i>
-                <span data-en="Connect Spotify" data-el="Σύνδεση Spotify">Σύνδεση Spotify</span>
-            </button>
             <span data-en="SoundMood Pro" data-el="SoundMood Pro">SoundMood Pro</span>
         </div>
-
         <div class="mood-question" data-en="What's your mood?" data-el="Ποιά είναι η διάθεσή σου;"></div>
 
         <div class="mood-grid">
