@@ -1,39 +1,28 @@
-require('dotenv').config();
-
-const allowedRedirects = ['https://soundmood-pro.netlify.app', 'https://your-approved-url.com'];
+// auth.js
+const clientId = 'd049909714344a469f3017b68941e0a2'; 
+const redirectUri = 'https://soundmood-pro.netlify.app/callback'; 
 
 document.getElementById('spotifyLogin').addEventListener('click', () => {
-  const clientId = process.env.SPOTIFY_CLIENT_ID;
-  const redirectUri = process.env.SPOTIFY_REDIRECT_URI; // Ensure this matches the registered URI in the Spotify Developer Dashboard
-
-  // Validate the redirect URI
-  if (!allowedRedirects.includes(redirectUri)) {
-    console.error('Invalid redirect URI');
-    return;
-  }
-
-  const scopes = 'user-read-private user-read-email';
-  const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&response_type=token&show_dialog=true`;
-
+  const scope = 'playlist-read-private user-read-private';
+  const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}&response_type=token&show_dialog=true`;
+  
   window.location.href = authUrl;
 });
 
-window.addEventListener('load', () => {
+// Token handling
+const parseToken = () => {
   const hash = window.location.hash.substring(1);
-  const params = new URLSearchParams(hash);
-  const accessToken = params.get('access_token');
+  const result = hash.split('&').reduce((res, item) => {
+    const [key, val] = item.split('=');
+    res[key] = decodeURIComponent(val);
+    return res;
+  }, {});
 
-  if (accessToken) {
-    fetch('https://api.spotify.com/v1/me', {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
-      }
-    })
-    .then(response => response.json())
-    .then(data => {
-      document.querySelector('#spotifyLogin span').textContent = `${data.display_name}`;
-      document.querySelector('#spotifyLogin').disabled = true;
-    })
-    .catch(error => console.error('Error:', error));
+  if (result.access_token) {
+    localStorage.setItem('spotifyToken', result.access_token);
+    localStorage.setItem('spotifyTokenExpiration', Date.now() + (result.expires_in * 1000));
+    window.history.replaceState({}, document.title, "/");
   }
-});
+};
+
+window.addEventListener('load', parseToken);
