@@ -1,16 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- ΤΙΤΛΟΣ & SEO -->
     <title>SoundMood Pro - Μουσική για Κάθε Διάθεση</title>
-    <link rel="stylesheet" href="style.css">
+    
     <!-- STYLES -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <head>
+    
+    <!-- SEO & SOCIAL META -->
     <meta name="description" content="Δημιουργήστε προσωπικές playlists στο Spotify ανάλογα με τη διάθεσή σας. Ιδανικό για χαλάρωση, γυμναστική, πάρτι και πολλές άλλες καταστάσεις!">
     <meta name="keywords" content="μουσική διάθεση, Spotify playlist, δημιουργία playlist, SoundMood Pro, ελληνική εφαρμογή μουσικής">
     
@@ -20,53 +19,64 @@
     <meta property="og:image" content="https://soundmood-pro.netlify.app/assets/images/social-preview.png">
     <meta property="og:url" content="https://soundmood-pro.netlify.app">
     <meta property="og:type" content="website">
-
-    <!-- Google Search Console Verification -->
+    
+    <!-- Google Search Console -->
     <meta name="google-site-verification" content="XXXXXXXXXXXXX_YOUR_CODE_XXXXXXXXXXX">
-
-    <!-- Ορισμός του callback που απαιτείται από το Spotify SDK -->
+    
+    <!-- Spotify SDK -->
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    
+    <!-- Ορισμός της global συνάρτησης για το Spotify SDK -->
     <script>
       window.onSpotifyWebPlaybackSDKReady = () => {
-          // Callback required by the Spotify SDK. Μπορεί να παραμείνει κενός.
+        console.log('Spotify SDK is ready!');
+        
+        // Χρησιμοποιούμε το token από το localStorage
+        const token = localStorage.getItem('spotifyToken');
+
+        if (token) {
+          const player = new Spotify.Player({
+            name: 'SoundMood Pro',
+            getOAuthToken: cb => { cb(token); }
+          });
+
+          player.addListener('ready', ({ device_id }) => {
+            console.log('Player is ready with Device ID:', device_id);
+          });
+
+          player.addListener('not_ready', ({ device_id }) => {
+            console.log('Device ID has gone offline:', device_id);
+          });
+
+          player.connect();
+        } else {
+          console.error('No Spotify token found. Please login first.');
+        }
       };
     </script>
     
-    <!-- SPOTIFY SDK -->
-    <script src="https://sdk.scdn.co/spotify-player.js"></script>
-
-    <!-- FONT -->
+    <!-- FONTS -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-
-    <!-- Schema.org Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "SoundMood Pro",
-      "description": "Δημιουργία προσωπικών playlists στο Spotify βασισμένων στη διάθεση",
-      "applicationCategory": "MusicApplication",
-      "operatingSystem": "Web",
-      "url": "https://soundmood-pro.netlify.app",
-      "image": "https://soundmood-pro.netlify.app/assets/images/logo.png",
-      "author": {
-        "@type": "Person",
-        "name": "OrkoMagic"
-      }
-    }
-    </script>
-  
-    <!-- Για το brand -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Brand",
-      "logo": "https://soundmood-pro.netlify.app/assets/images/logo.png",
-      "name": "SoundMood Pro"
-    }
-    </script>
     
-    <!-- ================ STYLES & FONTS ================ -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Schema.org Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "SoundMood Pro",
+        "description": "Δημιουργία προσωπικών playlists στο Spotify βασισμένων στη διάθεση",
+        "applicationCategory": "MusicApplication",
+        "operatingSystem": "Web",
+        "url": "https://soundmood-pro.netlify.app",
+        "image": "https://soundmood-pro.netlify.app/assets/images/logo.png",
+        "author": {
+          "@type": "Person",
+          "name": "OrkoMagic"
+        }
+      }
+    </script>
+
+    <!-- CSS STYLES -->
     <style>
         :root {
             --primary-color: #2A2F4F;
@@ -316,7 +326,6 @@
             border-top: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* Responsive για κινητά */
         @media (max-width: 600px) {
             .mood-grid {
                 grid-template-columns: 1fr;
@@ -325,8 +334,6 @@
             }
         }
     </style>
-      <!-- Import του style.css -->
-      <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="animated-bg"></div>
@@ -448,55 +455,55 @@
 
     <script>
         let currentLanguage = 'en';
-
+    
         const playlists = {
             love: {
-                en: { title: "Love Songs", url: "https://open.spotify.com/playlist/37i9dQZF1DX50QitC6Oqtn" },
-                el: { title: "Τραγούδια Αγάπης", url: "https://open.spotify.com/playlist/37i9dQZF1DX50QitC6Oqtn" }
+                en: { title: "Love Songs", url: "37i9dQZF1DX50QitC6Oqtn" },
+                el: { title: "Τραγούδια Αγάπης", url: "37i9dQZF1DX50QitC6Oqtn" }
             },
             happy: {
-                en: { title: "Happy Hits", url: "https://open.spotify.com/playlist/37i9dQZF1DXdPec7aLTmlC" },
-                el: { title: "Χαρούμενα Τραγούδια", url: "https://open.spotify.com/playlist/37i9dQZF1DXdPec7aLTmlC" }
+                en: { title: "Happy Hits", url: "37i9dQZF1DXdPec7aLTmlC" },
+                el: { title: "Χαρούμενα Τραγούδια", url: "37i9dQZF1DXdPec7aLTmlC" }
             },
             sad: {
-                en: { title: "Sad Moments", url: "https://open.spotify.com/playlist/37i9dQZF1DX7qK8ma5wgG1" },
-                el: { title: "Λυπημένα Τραγούδια", url: "https://open.spotify.com/playlist/37i9dQZF1DX7qK8ma5wgG1" }
+                en: { title: "Sad Moments", url: "37i9dQZF1DX7qK8ma5wgG1" },
+                el: { title: "Λυπημένα Τραγούδια", url: "37i9dQZF1DX7qK8ma5wgG1" }
             },
             chill: {
-                en: { title: "Chill Vibes", url: "https://open.spotify.com/playlist/37i9dQZF1DX4WYpdgoIcn6" },
-                el: { title: "Χαλαρά Τραγούδια", url: "https://open.spotify.com/playlist/37i9dQZF1DX4WYpdgoIcn6" }
+                en: { title: "Chill Vibes", url: "37i9dQZF1DX4WYpdgoIcn6" },
+                el: { title: "Χαλαρά Τραγούδια", url: "37i9dQZF1DX4WYpdgoIcn6" }
             },
             party: {
-                en: { title: "Party Mix", url: "https://open.spotify.com/playlist/37i9dQZF1DXaXB8fQg7xif" },
-                el: { title: "Πάρτι Mix", url: "https://open.spotify.com/playlist/37i9dQZF1DXaXB8fQg7xif" }
+                en: { title: "Party Mix", url: "37i9dQZF1DXaXB8fQg7xif" },
+                el: { title: "Πάρτι Mix", url: "37i9dQZF1DXaXB8fQg7xif" }
             },
             rainy: {
-                en: { title: "Rainy Days", url: "https://open.spotify.com/playlist/37i9dQZF1DXbvABJXBIyiY" },
-                el: { title: "Βροχερές Μέρες", url: "https://open.spotify.com/playlist/37i9dQZF1DXbvABJXBIyiY" }
+                en: { title: "Rainy Days", url: "37i9dQZF1DXbvABJXBIyiY" },
+                el: { title: "Βροχερές Μέρες", url: "37i9dQZF1DXbvABJXBIyiY" }
             },
             workout: {
-                en: { title: "Workout Energy", url: "https://open.spotify.com/playlist/37i9dQZF1DX76Wlfdnj7AP" },
-                el: { title: "Γυμναστική", url: "https://open.spotify.com/playlist/37i9dQZF1DX76Wlfdnj7AP" }
+                en: { title: "Workout Energy", url: "37i9dQZF1DX76Wlfdnj7AP" },
+                el: { title: "Γυμναστική", url: "37i9dQZF1DX76Wlfdnj7AP" }
             },
             nostalgic: {
-                en: { title: "Nostalgic Hits", url: "https://open.spotify.com/playlist/37i9dQZF1DX4UtSsGT1Sbe" },
-                el: { title: "Νοσταλγία", url: "https://open.spotify.com/playlist/37i9dQZF1DX4UtSsGT1Sbe" }
+                en: { title: "Nostalgic Hits", url: "37i9dQZF1DX4UtSsGT1Sbe" },
+                el: { title: "Νοσταλγία", url: "37i9dQZF1DX4UtSsGT1Sbe" }
             },
             zen: {
-                en: { title: "Zen Meditation", url: "https://open.spotify.com/playlist/37i9dQZF1DWZqd5JICZI0u" },
-                el: { title: "Διαλογισμός", url: "https://open.spotify.com/playlist/37i9dQZF1DWZqd5JICZI0u" }
+                en: { title: "Zen Meditation", url: "37i9dQZF1DWZqd5JICZI0u" },
+                el: { title: "Διαλογισμός", url: "37i9dQZF1DWZqd5JICZI0u" }
             },
             breakup: {
-                en: { title: "Breakup Songs", url: "https://open.spotify.com/playlist/37i9dQZF1DXbrUpGvoi3TS" },
-                el: { title: "Χωρισμός", url: "https://open.spotify.com/playlist/37i9dQZF1DXbrUpGvoi3TS" }
+                en: { title: "Breakup Songs", url: "37i9dQZF1DXbrUpGvoi3TS" },
+                el: { title: "Χωρισμός", url: "37i9dQZF1DXbrUpGvoi3TS" }
             }
         };
-
+    
         function toggleLanguage() {
             currentLanguage = currentLanguage === 'el' ? 'en' : 'el';
             updateTextElements();
         }
-
+    
         function updateTextElements() {
             document.querySelectorAll('[data-en], [data-el]').forEach(element => {
                 const text = element.getAttribute(`data-${currentLanguage}`);
@@ -511,7 +518,7 @@
                 }
             });
         }
-
+    
         function selectMood(moodType) {
             if (!playlists[moodType]) {
                 alert(currentLanguage === 'el' ? 
@@ -522,20 +529,20 @@
             const playlist = playlists[moodType][currentLanguage];
             showPlaylist(playlist);
         }
-
+    
         function handleCustomGenre() {
             const input = document.querySelector('.genre-input');
             const searchTerm = input.value.trim().toLowerCase();
             
             const searchMap = {
-                'house': { el: 'House Μουσική', en: 'House Music', url: 'https://open.spotify.com/playlist/37i9dQZF1DXa8NOEUWPn9W' },
-                'rock': { el: 'Ροκ Κλασικά', en: 'Rock Classics', url: 'https://open.spotify.com/playlist/37i9dQZF1DWXRqgorJj26U' }
+                'house': { el: 'House Μουσική', en: 'House Music', url: '37i9dQZF1DXa8NOEUWPn9W' },
+                'rock': { el: 'Ροκ Κλασικά', en: 'Rock Classics', url: '37i9dQZF1DWXRqgorJj26U' }
             };
-
+    
             const found = Object.entries(searchMap).find(([key]) => 
                 searchTerm.includes(key.toLowerCase())
             );
-
+    
             if (found) {
                 showPlaylist({
                     title: found[1][currentLanguage],
@@ -546,57 +553,59 @@
                     title: currentLanguage === 'el' 
                         ? `Αναζήτηση: ${searchTerm}` 
                         : `Search: ${searchTerm}`,
-                    url: `https://open.spotify.com/search/${encodeURIComponent(searchTerm)}`
+                    url: `search/${encodeURIComponent(searchTerm)}`
                 });
             }
             input.value = '';
         }
-
+    
         function showPlaylist(playlist) {
             const container = document.getElementById('playlistContainer');
             container.innerHTML = `
                 <div class="playlist-card">
                     <h3>${playlist.title}</h3>
-                    <a href="${playlist.url}" class="spotify-link" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-spotify"></i> 
-                        ${currentLanguage === 'el' ? 'Ανοίξτε στο Spotify' : 'Open in Spotify'}
-                    </a>
+                    <img 
+                        src="https://developer.spotify.com/assets/branding-guidelines/logo@2x.png" 
+                        style="height:40px; margin:10px 0;" 
+                        alt="Spotify"
+                    >
+                    <iframe 
+                        src="https://open.spotify.com/embed/playlist/${playlist.url}" 
+                        width="100%" 
+                        height="380" 
+                        frameborder="0" 
+                        allowtransparency="true" 
+                        allow="encrypted-media"
+                    ></iframe>
                     <div class="share-buttons">
-                        <button class="share-btn" onclick="shareTo('facebook', '${playlist.url}')" aria-label="Κοινήχηση στο Facebook">
+                        <button class="share-btn" onclick="shareTo('facebook', '${playlist.url}')">
                             <i class="fab fa-facebook"></i> Facebook
                         </button>
-                        <button class="share-btn" onclick="shareTo('instagram', '${playlist.url}')" aria-label="Κοινήχηση στο Instagram">
+                        <button class="share-btn" onclick="shareTo('instagram', '${playlist.url}')">
                             <i class="fab fa-instagram"></i> Instagram
-                        </button>
-                        <button class="share-btn" onclick="shareTo('tiktok', '${playlist.url}')" aria-label="Κοινήχηση στο TikTok">
-                            <i class="fab fa-tiktok"></i> TikTok
-                        </button>
-                        <button class="share-btn" onclick="shareTo('whatsapp', '${playlist.url}')" aria-label="Κοινήχηση στο WhatsApp">
-                            <i class="fab fa-whatsapp"></i> WhatsApp
                         </button>
                     </div>
                 </div>
             `;
         }
-
+    
         function shareTo(platform, url) {
+            const fullUrl = `https://open.spotify.com/playlist/${url}`;
             const message = currentLanguage === 'el' 
-                ? `Ανακάλυψα αυτή τη playlist στο Spotify μέσω του SoundMood Pro (ανεξάρτητη εφαρμογή): ${url}`
-                : `Discovered this Spotify playlist via SoundMood Pro (independent app): ${url}`;
-
+                ? `Ανακάλυψα αυτή τη playlist στο Spotify: ${fullUrl}` 
+                : `Check this Spotify playlist: ${fullUrl}`;
+    
             const shareUrls = {
-                facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-                instagram: `https://www.instagram.com/?url=${encodeURIComponent(url)}`,
-                tiktok: `https://www.tiktok.com/share?url=${encodeURIComponent(url)}`,
-                whatsapp: `https://wa.me/?text=${encodeURIComponent(message)}`
+                facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fullUrl)}`,
+                instagram: `https://www.instagram.com/?url=${encodeURIComponent(fullUrl)}`,
             };
-
+    
             window.open(shareUrls[platform], '_blank');
         }
-    // Αρχικοποίηση κειμένων (EN ως προεπιλογή)
-    updateTextElements();
+    
+        updateTextElements();
     </script>
-
-<script src="js/auth.js" defer></script>
+    
+    <script src="./js/auth.js" type="module"></script>
 </body>
 </html>

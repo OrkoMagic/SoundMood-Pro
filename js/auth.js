@@ -5,23 +5,22 @@ const redirectUri = 'https://soundmood-pro.netlify.app/callback';
 document.getElementById('spotifyLogin').addEventListener('click', () => {
   const scope = 'playlist-read-private user-read-private';
   const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scope)}&response_type=token&show_dialog=true`;
-  
   window.location.href = authUrl;
 });
 
 // Token handling
 const parseToken = () => {
   const hash = window.location.hash.substring(1);
-  const result = hash.split('&').reduce((res, item) => {
-    const [key, val] = item.split('=');
-    res[key] = decodeURIComponent(val);
-    return res;
-  }, {});
+  const params = new URLSearchParams(hash);
+  const accessToken = params.get('access_token');
+  const expiresIn = params.get('expires_in');
 
-  if (result.access_token) {
-    localStorage.setItem('spotifyToken', result.access_token);
-    localStorage.setItem('spotifyTokenExpiration', Date.now() + (result.expires_in * 1000));
-    window.history.replaceState({}, document.title, "/");
+  if (accessToken) {
+    localStorage.setItem('spotifyToken', accessToken);
+    localStorage.setItem('spotifyTokenExpiration', Date.now() + (expiresIn * 1000));
+    window.history.replaceState({}, document.title, window.location.pathname);
+  } else {
+    console.error('Error: No access token found in URL');
   }
 };
 
