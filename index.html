@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoundMood Pro v2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2A2F4F;
+            --secondary-color: #4E4FEB;
+            --accent-color: #FFD700;
+            --background-dark: #1A1A2E;
+            --text-light: #F5F5F5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--background-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+            background-size: 400% 400%;
+            animation: gradientFlow 15s ease infinite;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .logo {
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            z-index: 1000;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 1em;
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+            backdrop-filter: blur(5px);
+        }
+
+        .logo img {
+            width: 200px;
+            height: auto;
+        }
+
+        .language-toggle {
+            position: fixed;
+            top: 18px;
+            right: 12px;
+            z-index: 1000;
+            background: rgba(255,255,255,0.1);
+            padding: 3px 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.8em;
+            backdrop-filter: blur(5px);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 12px;
+            flex-grow: 1;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 0.8rem;
+            border-radius: 12px;
+            margin: 50px 0 15px;
+            text-align: center;
+            font-size: 0.95em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mood-question {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            color: var(--accent-color);
+        }
+
+        .mood-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .mood-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            color: var(--text-light);
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            min-height: 60px;
+            backdrop-filter: blur(5px);
+            position: relative;
+        }
+
+        .mood-btn:active {
+            transform: scale(0.95);
+            background: var(--secondary-color);
+        }
+
+        .mood-btn i {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .mood-btn:hover i {
+            transform: rotate(15deg);
+        }
+
+        .input-area {
+            margin: 15px 0;
+        }
+
+        .input-box {
+            display: flex;
+            gap: 8px;
+        }
+
+        .genre-input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-light);
+            font-size: 0.9em;
+            backdrop-filter: blur(5px);
+        }
+
+        .send-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            background: var(--secondary-color);
+            color: white;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: transform 0.2s ease;
+        }
+
+        .playlist-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            animation: slideIn 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .spotify-link {
+            display: block;
+            margin: 8px 0;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.85em;
+            transition: letter-spacing 0.3s ease;
+        }
+
+        .spotify-link:hover {
+            letter-spacing: 1px;
+        }
+
+        .share-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .share-btn {
+            flex: 1 1 45%;
+            padding: 6px;
+            border-radius: 6px;
+            border: none;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            min-width: 90px;
+            font-size: 0.8em;
+            transition: transform 0.2s ease;
+        }
+
+        .fa-tiktok {
+            filter: drop-shadow(2px 0px 0px #FD3E3E) drop-shadow(-2px -2px 0px #4DE8F4);
+        }
+
+        .footer-note {
+            font-size: 0.7em;
+            line-height: 1.4;
+            margin-top: 10px;
+            text-align: center;
+            padding: 20px;
+            color: #888;
+        }
+
+        .disclaimer {
+            font-size: 0.6em;
+            color: #666;
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .login-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 9999;
+            display: none;
+        }
+
+        .spotify-login-btn {
+            background: #1DB954;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .spotify-login-btn:hover {
+            transform: scale(1.05);
+        }
+
+        body:not(.logged-in) .container {
+            filter: blur(5px);
+            pointer-events: none;
+        }
+
+        @media (max-width: 600px) {
+            .mood-grid {
+                grid-template-columns: 1fr;
+                max-width: 300px;
+                margin: 0 auto;
+            }
+            .logo img {
+                width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    
+    <div class="logo">
+        <img src="./images/logo.png" alt="SoundMood Pro">
+    </div>
+
+    <div class="language-toggle" onclick="toggleLanguage()" data-en="EN/GR" data-el="GR/EN">EN/GR</div>
+
+    <div id="loginContainer" class="login-container">
+        <button id="spotifyLogin" class="spotify-login-btn">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" 
+                 class="spotify-logo">
+            Connect with Spotify
+        </button>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <span data-en="SoundMood Pro" data-el="SoundMood Pro">SoundMood Pro</span>
+        </div>
+        
+        <div class="mood-question" data-en="What's your mood?" data-el="Ποιά είναι η διάθεσή σου;"></div>
+
+        <div class="mood-grid">
+            <button class="mood-btn" onclick="selectMood('love')" data-en="Love" data-el="Αγάπη">
+                <i class="fas fa-heart"></i>
+                <span>Αγάπη</span>
+            </button>
+            <button class="mood-btn" onclick="selectMood('happy')" data-en="Happy" data-el="Χαρά">
+                <i class="fas fa-laugh-beam"></i>
+                <span>Χαρά</span>
+            </button>
+            <button class="mood-btn" onclick="selectMood('sad')" data-en="Sad" data-el="Λύπη">
+                <i class="fas fa-sad-tear"></i>
+                <span>Λύπη</span>
+            </button>
+            <button class="mood-btn" onclick="selectMood('chill')" data-en="Chill" data-el="Χαλαρά">
+                <i class="fas fa-moon"></i>
+                <span>Χαλαρά</span>
+            </button>
+            <button class="mood-btn" onclick="selectMood('party')" data-en="Party" data-el="Πάρτι">
+                <i class="fas fa-glass-cheers"></i>
+                <span>Πάρτι</span>
+            </button>
+            <button class="mood-btn" onclick="selectMood('rainy')" data-en="Rainy Days" data-el="Βροχερές Μέρες">
+                <i class="fas fa-cloud-rain"></i>
+                <span>Βροχερές Μέρες</span>
+            </button>
+            <button class="mood-btn" onclick="selectMood('workout')" data-en="Workout" data-el="Γυμναστική">
+                <i class="fas fa-dumbbell"></i>
+                <span>Γυμναστική</span>
+            </button>
+            <button class="mood-btn" onclick="selectMood('nostalgic')" data-en="Nostalgic" data-el="Νοσταλγία">
+                <i class="fas fa-history"></i>
+                <span>Νοσταλγία</span>
+            </button>
+            <button class="mood-btn" onclick="selectMood('zen')" data-en="Zen" data-el="Διαλογισμός">
+                <i class="fas fa-spa"></i>
+                <span>Διαλογισμός</span>
+            </button>
+            <button class="mood-btn" onclick="selectMood('breakup')" data-en="Break Up" data-el="Χωρισμός">
+                <i class="fas fa-heart-broken"></i>
+                <span>Χωρισμός</span>
+            </button>
+        </div>
+
+        <div class="input-area">
+            <div class="input-box">
+                <input type="text" class="genre-input" 
+                    placeholder="Select music genre or your favorite artist!"
+                    data-en="Select music genre or your favorite artist!"
+                    data-el="Επιλέξτε είδος μουσικής ή αγαπημένο καλλιτέχνη!">
+                <button class="send-btn" onclick="handleCustomGenre()" 
+                        data-en="Mood" data-el="Διάθεση">Mood</button>
+            </div>
+        </div>
+
+        <div id="playlistContainer"></div>
+
+        <div class="footer-note">
+            Developed by Costas Chatzisalis © 2025<br>
+            Contact: kouroupa82@gmail.com<br>
+            <a href="https://ko-fi.com/OrkoMagic" target="_blank" rel="noopener noreferrer" style="margin-top:10px;display:inline-block;">
+                <img src="https://cdn.ko-fi.com/cdn/kofi3.png" alt="Υποστήριξη SoundMood Pro μέσω Ko-fi" style="height:40px;">
+            </a>
+        </div>
+
+        <div class="disclaimer" 
+            data-en="This app uses Spotify links under their <a href='https://www.spotify.com/legal/end-user-agreement/' target='_blank' rel='noopener'>Terms</a>"
+            data-el="Η εφαρμογή χρησιμοποιεί συνδέσμους Spotify σύμφωνα με τους <a href='https://www.spotify.com/legal/end-user-agreement/' target='_blank' rel='noopener'>Όρους Χρήσης</a>">
+        </div>
+    </div>
+
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+    <script>
+        // ====================== AUTH.JS ======================
+        (() => {
+            const CLIENT_ID = '6f24397905834a03b7c0e82039d61ca1'; // Βάλε ΤΟ ΔΙΚΟ ΣΟΥ ID
+            const REDIRECT_URI = 'https://soundmood-pro.netlify.app/callback';
+
+            window.onSpotifyWebPlaybackSDKReady = () => {
+                const token = localStorage.getItem('spotifyToken');
+                if (token) {
+                    window.player = new Spotify.Player({
+                        name: 'SoundMood Pro v2',
+                        getOAuthToken: cb => cb(token),
+                        volume: 0.5,
+                        enableMediaSession: true,
+                        mediaKeys: {
+                            persistentKey: 'soundmood-pro-key',
+                            robustness: 'SW_SECURE_CRYPTO'
+                        }
+                    });
+
+                    window.player.addListener('ready', ({ device_id }) => {
+                        console.log('✅ Συνδέθηκε!');
+                        document.body.classList.add('logged-in');
+                        document.getElementById('loginContainer').style.display = 'none';
+                    });
+
+                    window.player.addListener('authentication_error', ({ message }) => {
+                        console.error('Σφάλμα Auth:', message);
+                        localStorage.removeItem('spotifyToken');
+                        window.location.reload();
+                    });
+
+                    window.player.connect();
+                }
+            };
+
+            document.getElementById('spotifyLogin').addEventListener('click', () => {
+                const scopes = [
+                    'user-read-private',
+                    'user-read-email',
+                    'streaming',
+                    'user-read-playback-state',
+                    'user-modify-playback-state',
+                    'user-read-currently-playing'
+                ].join('%20');
+
+                window.location.href = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${scopes}&response_type=token&show_dialog=true`;
+            });
+
+            const hashParams = new URLSearchParams(window.location.hash.substring(1));
+            if (hashParams.get('access_token')) {
+                localStorage.setItem('spotifyToken', hashParams.get('access_token'));
+                window.history.replaceState({}, '', window.location.pathname);
+                window.location.reload();
+            }
+        })();
+
+        // ====================== APP.JS ======================
+        document.addEventListener('DOMContentLoaded', () => {
+            let currentLanguage = 'el';
+            const playlists = {
+                love: { en: "Love Songs", el: "Τραγούδια Αγάπης", url: "37i9dQZF1DX50QitC6Oqtn" },
+                happy: { en: "Happy Hits", el: "Χαρούμενα Τραγούδια", url: "37i9dQZF1DXdPec7aLTmlC" },
+                sad: { en: "Sad Moments", el: "Λυπημένα Τραγούδια", url: "37i9dQZF1DX7qK8ma5wgG1" },
+                chill: { en: "Chill Vibes", el: "Χαλαρά Τραγούδια", url: "37i9dQZF1DX4WYpdgoIcn6" },
+                party: { en: "Party Mix", el: "Πάρτι Mix", url: "37i9dQZF1DXaXB8fQg7xif" },
+                rainy: { en: "Rainy Days", el: "Βροχερές Μέρες", url: "37i9dQZF1DXbvABJXBIyiY" },
+                workout: { en: "Workout Energy", el: "Γυμναστική", url: "37i9dQZF1DX76Wlfdnj7AP" },
+                nostalgic: { en: "Nostalgic Hits", el: "Νοσταλγία", url: "37i9dQZF1DX4UtSsGT1Sbe" },
+                zen: { en: "Zen Meditation", el: "Διαλογισμός", url: "37i9dQZF1DWZqd5JICZI0u" },
+                breakup: { en: "Breakup Songs", el: "Χωρισμός", url: "37i9dQZF1DXbrUpGvoi3TS" }
+            };
+
+            window.toggleLanguage = () => {
+                currentLanguage = currentLanguage === 'el' ? 'en' : 'el';
+                document.querySelectorAll('[data-en], [data-el]').forEach(el => {
+                    const text = el.getAttribute(`data-${currentLanguage}`);
+                    if (el.tagName === 'INPUT') {
+                        el.placeholder = text;
+                    } else if (el.className === 'disclaimer') {
+                        el.innerHTML = text;
+                    } else {
+                        el.textContent = text;
+                    }
+                });
+            };
+
+            window.selectMood = (moodType) => {
+                const playlist = playlists[moodType][currentLanguage];
+                const container = document.getElementById('playlistContainer');
+                container.innerHTML = `
+                    <div class="playlist-card">
+                        <h3>${playlist.title}</h3>
+                        <iframe src="https://open.spotify.com/embed/playlist/${playlist.url}" 
+                                width="100%" 
+                                height="380" 
+                                frameborder="0" 
+                                allowtransparency="true" 
+                                allow="encrypted-media">
+                        </iframe>
+                        <div class="share-buttons">
+                            <button class="share-btn" onclick="shareTo('facebook', '${playlist.url}')">
+                                <i class="fab fa-facebook"></i> Facebook
+                            </button>
+                            <button class="share-btn" onclick="shareTo('instagram', '${playlist.url}')">
+                                <i class="fab fa-instagram"></i> Instagram
+                            </button>
+                        </div>
+                    </div>
+                `;
+            };
+
+            window.handleCustomGenre = async () => {
+                const input = document.querySelector('.genre-input');
+                const searchTerm = input.value.trim();
+                
+                if (!searchTerm) {
+                    alert(currentLanguage === 'el' 
+                        ? "Πληκτρολογήστε κάτι πρώτα!" 
+                        : "Please type something!");
+                    return;
+                }
+
+                try {
+                    const response = await fetch(
+                        `https://api.spotify.com/v1/search?q=${encodeURIComponent(searchTerm)}&type=track&limit=1`,
+                        {
+                            headers: { 
+                                'Authorization': `Bearer ${localStorage.getItem('spotifyToken')}` 
+                            }
+                        }
+                    );
+                    
+                    const data = await response.json();
+                    if (data.tracks?.items[0]) {
+                        window.player._options.getOAuthToken(token => {
+                            fetch(`https://api.spotify.com/v1/me/player/play?device_id=${window.player.device_id}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Authorization': `Bearer ${token}`,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ uris: [data.tracks.items[0].uri] })
+                            });
+                        });
+                    }
+                } catch (error) {
+                    alert(currentLanguage === 'el' 
+                        ? "Σφάλμα αναζήτησης. Παρακαλώ δοκιμάστε ξανά." 
+                        : "Search error. Please try again.");
+                }
+            };
+
+            window.shareTo = (platform, url) => {
+                const fullUrl = `https://open.spotify.com/playlist/${url}`;
+                const shareUrls = {
+                    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fullUrl)}`,
+                    instagram: `https://www.instagram.com/?url=${encodeURIComponent(fullUrl)}`
+                };
+                window.open(shareUrls[platform], '_blank');
+            };
+
+            updateTextElements();
+            if (!localStorage.getItem('spotifyToken')) {
+                document.getElementById('loginContainer').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
