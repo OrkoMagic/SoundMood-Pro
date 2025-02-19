@@ -396,7 +396,7 @@
     <script>
         // ====================== AUTH.JS ======================
         (() => {
-            const CLIENT_ID = '6f24397905834a03b7c0e82039d61ca1'; // Βάλε ΤΟ ΔΙΚΟ ΣΟΥ ID
+            const CLIENT_ID = '6f24397905834a03b7c0e82039d61ca1';
             const REDIRECT_URI = 'https://soundmood-pro.netlify.app/callback';
 
             window.onSpotifyWebPlaybackSDKReady = () => {
@@ -466,8 +466,7 @@
                 breakup: { en: "Breakup Songs", el: "Χωρισμός", url: "37i9dQZF1DXbrUpGvoi3TS" }
             };
 
-            window.toggleLanguage = () => {
-                currentLanguage = currentLanguage === 'el' ? 'en' : 'el';
+            function updateTextElements() {
                 document.querySelectorAll('[data-en], [data-el]').forEach(el => {
                     const text = el.getAttribute(`data-${currentLanguage}`);
                     if (el.tagName === 'INPUT') {
@@ -478,8 +477,7 @@
                         el.textContent = text;
                     }
                 });
-            };
-
+            }
             window.selectMood = (moodType) => {
                 const playlist = playlists[moodType][currentLanguage];
                 const container = document.getElementById('playlistContainer');
@@ -493,14 +491,6 @@
                                 allowtransparency="true" 
                                 allow="encrypted-media">
                         </iframe>
-                        <div class="share-buttons">
-                            <button class="share-btn" onclick="shareTo('facebook', '${playlist.url}')">
-                                <i class="fab fa-facebook"></i> Facebook
-                            </button>
-                            <button class="share-btn" onclick="shareTo('instagram', '${playlist.url}')">
-                                <i class="fab fa-instagram"></i> Instagram
-                            </button>
-                        </div>
                     </div>
                 `;
             };
@@ -544,15 +534,6 @@
                         ? "Σφάλμα αναζήτησης. Παρακαλώ δοκιμάστε ξανά." 
                         : "Search error. Please try again.");
                 }
-            };
-
-            window.shareTo = (platform, url) => {
-                const fullUrl = `https://open.spotify.com/playlist/${url}`;
-                const shareUrls = {
-                    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fullUrl)}`,
-                    instagram: `https://www.instagram.com/?url=${encodeURIComponent(fullUrl)}`
-                };
-                window.open(shareUrls[platform], '_blank');
             };
 
             updateTextElements();
