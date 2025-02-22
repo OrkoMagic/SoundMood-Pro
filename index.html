@@ -562,15 +562,16 @@
         if (data.preview_url) {
           const audio = new Audio(data.preview_url);
           audio.play();
+        } else if (data.external_urls && data.external_urls.spotify) {
+          window.open(data.external_urls.spotify, '_blank');
         } else {
-          console.error("No preview available for track:", trackId);
+          console.error("No preview available and no fallback URL for track:", trackId);
         }
       })
       .catch(error => console.error("Error fetching preview:", error));
     }
 
     function playTrack(trackUri) {
-      // Extract the track ID from "spotify:track:TRACK_ID"
       const parts = trackUri.split(":");
       const trackId = parts[2];
       fetch("https://api.spotify.com/v1/me", {
@@ -582,7 +583,6 @@
       .then(response => response.json())
       .then(data => {
         if (data.product === "premium") {
-          // Full playback for premium users
           fetch("https://api.spotify.com/v1/me/player/play", {
             method: "PUT",
             headers: {
@@ -598,7 +598,6 @@
             if (!res.ok) console.error("Error playing track:", res);
           });
         } else {
-          // For free users, play preview
           playPreview(trackId);
         }
       })
@@ -631,6 +630,31 @@
 
     // ===================== INIT =====================
     toggleLanguage();
+  </script>
+
+  <!-- Spotify Web Playback SDK Scripts -->
+  <script src="https://sdk.scdn.co/spotify-player.js"></script>
+  <script>
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      const token = localStorage.getItem('spotifyToken');
+      if (!token) return;
+      const player = new Spotify.Player({
+        name: 'SoundMood Pro Player',
+        getOAuthToken: cb => { cb(token); },
+        volume: 0.5
+      });
+      player.addListener('ready', ({ device_id }) => {
+        console.log('ΣΥΝΔΕΘΗΚΕ ΣΥΣΚΕΥΗ:', device_id);
+        window.spotifyDeviceId = device_id;
+      });
+      player.addListener('authentication_error', ({ message }) => {
+        console.error('Σφάλμα αυθεντικοποίησης:', message);
+        localStorage.removeItem('spotifyToken');
+        localStorage.removeItem('refreshToken');
+        initializeAuth();
+      });
+      player.connect();
+    };
   </script>
 </body>
 </html>
