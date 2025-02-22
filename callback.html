@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <title>SoundMood Pro Callback</title>
+</head>
+<body>
+  <h2>Παρακαλώ περιμένετε...</h2>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    if (!code) {
+      window.location.href = '/';
+    } else {
+      const codeVerifier = localStorage.getItem('code_verifier');
+      fetch('/.netlify/functions/exchange', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, code_verifier: codeVerifier })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          console.error('Exchange error:', data);
+          alert('Σφάλμα κατά την ανταλλαγή κωδικού.');
+          window.location.href = '/';
+        } else {
+          localStorage.setItem('spotifyToken', data.access_token);
+          localStorage.setItem('refreshToken', data.refresh_token);
+          localStorage.removeItem('code_verifier');
+          window.location.href = '/';
+        }
+      })
+      .catch(err => {
+        console.error('Token exchange error:', err);
+        alert('Σφάλμα λήψης token.');
+        window.location.href = '/';
+      });
+    }
+  </script>
+</body>
+</html>
