@@ -505,7 +505,7 @@
       }
     });
 
-    // ===================== API ΚΛΗΣΕΙΣ για στατικά κουμπιά διάθεσης =====================
+    // ===================== Static Mood Buttons API Calls =====================
     async function selectMood(moodType) {
       try {
         let token = localStorage.getItem('spotifyToken');
@@ -526,56 +526,83 @@
         const data = await response.json();
         const playlists = data.playlists?.items || [];
         const container = document.getElementById('playlistContainer');
-        container.innerHTML = playlists.map(playlist => `
-          <div class="playlist-card">
-            <iframe src="https://open.spotify.com/embed/playlist/${playlist.id}" 
-                    width="100%" 
-                    height="380" 
-                    allow="encrypted-media">
-            </iframe>
-            <div class="social-share">
-              <i class="fab fa-facebook social-icon" onclick="shareTo('facebook', '${playlist.id}')"></i>
-              <i class="fab fa-instagram social-icon" onclick="shareTo('instagram', '${playlist.id}')"></i>
-              <i class="fab fa-twitter social-icon" onclick="shareTo('twitter', '${playlist.id}')"></i>
+        container.innerHTML = playlists.map(playlist => {
+          if (!playlist || !playlist.id) return '';
+          return `
+            <div class="playlist-card">
+              <iframe src="https://open.spotify.com/embed/playlist/${playlist.id}" 
+                      width="100%" 
+                      height="380" 
+                      allow="encrypted-media">
+              </iframe>
+              <div class="social-share">
+                <i class="fab fa-facebook social-icon" onclick="shareTo('facebook', '${playlist.id}')"></i>
+                <i class="fab fa-instagram social-icon" onclick="shareTo('instagram', '${playlist.id}')"></i>
+                <i class="fab fa-twitter social-icon" onclick="shareTo('twitter', '${playlist.id}')"></i>
+              </div>
             </div>
-          </div>
-        `).join('');
+          `;
+        }).join('');
       } catch(error) {
         console.error('Σφάλμα:', error);
         alert('Σφάλμα φόρτωσης playlist');
       }
     }
 
-    async function playTrack(uri) {
-      try {
-        let token = localStorage.getItem('spotifyToken');
-        if (!token) {
-          await initializeAuth();
-          return;
+    // ===================== Playback Functions =====================
+    function playPreview(trackId) {
+      fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem('spotifyToken')}`
         }
-        let response = await fetch(`https://api.spotify.com/v1/me/player/play`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ uris: [uri] })
-        });
-        if (response.status === 401) {
-          token = await refreshToken();
-          if (!token) return;
-          response = await fetch(`https://api.spotify.com/v1/me/player/play`, {
-            method: 'PUT',
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.preview_url) {
+          const audio = new Audio(data.preview_url);
+          audio.play();
+        } else {
+          console.error("No preview available for track:", trackId);
+        }
+      })
+      .catch(error => console.error("Error fetching preview:", error));
+    }
+
+    function playTrack(trackUri) {
+      // Extract the track ID from "spotify:track:TRACK_ID"
+      const parts = trackUri.split(":");
+      const trackId = parts[2];
+      fetch("https://api.spotify.com/v1/me", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem('spotifyToken')}`
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.product === "premium") {
+          // Full playback for premium users
+          fetch("https://api.spotify.com/v1/me/player/play", {
+            method: "PUT",
             headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
+              "Authorization": `Bearer ${localStorage.getItem('spotifyToken')}`,
+              "Content-Type": "application/json"
             },
-            body: JSON.stringify({ uris: [uri] })
+            body: JSON.stringify({
+              device_id: window.spotifyDeviceId,
+              uris: [trackUri]
+            })
+          })
+          .then(res => {
+            if (!res.ok) console.error("Error playing track:", res);
           });
+        } else {
+          // For free users, play preview
+          playPreview(trackId);
         }
-      } catch(error) {
-        console.error('Σφάλμα αναπαραγωγής:', error);
-      }
+      })
+      .catch(err => console.error("Error checking account type:", err));
     }
 
     function shareTo(platform, contentId) {
@@ -588,7 +615,7 @@
       window.open(shareUrls[platform], '_blank');
     }
 
-    // ===================== ΓΛΩΣΣΑ =====================
+    // ===================== Language Functions =====================
     let currentLanguage = 'el';
     function toggleLanguage() {
       currentLanguage = currentLanguage === 'el' ? 'en' : 'el';
@@ -604,31 +631,6 @@
 
     // ===================== INIT =====================
     toggleLanguage();
-  </script>
-
-  <!-- Spotify Web Playback SDK Scripts -->
-  <script src="https://sdk.scdn.co/spotify-player.js"></script>
-  <script>
-    window.onSpotifyWebPlaybackSDKReady = () => {
-      const token = localStorage.getItem('spotifyToken');
-      if (!token) return;
-      const player = new Spotify.Player({
-        name: 'SoundMood Pro Player',
-        getOAuthToken: cb => { cb(token); },
-        volume: 0.5
-      });
-      player.addListener('ready', ({ device_id }) => {
-        console.log('ΣΥΝΔΕΘΗΚΕ ΣΥΣΚΕΥΗ:', device_id);
-        window.spotifyDeviceId = device_id;
-      });
-      player.addListener('authentication_error', ({ message }) => {
-        console.error('Σφάλμα αυθεντικοποίησης:', message);
-        localStorage.removeItem('spotifyToken');
-        localStorage.removeItem('refreshToken');
-        initializeAuth();
-      });
-      player.connect();
-    };
   </script>
 </body>
 </html>
