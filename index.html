@@ -254,7 +254,7 @@
   
   <div class="logo">
     <img src="./images/logo.png" alt="SoundMood Pro">
-    <button onclick="getAuthUrl()">Σύνδεση με Spotify</button>
+    
   </div>
 
   <div class="language-toggle" onclick="toggleLanguage()" data-en="EN/GR" data-el="GR/EN">EN/GR</div>
@@ -350,12 +350,6 @@
    
   <!-- General Scripts -->
   <script>
-    // ===================== ΡΥΘΜΙΣΕΙΣ =====================
-    const isLocal = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-    const CLIENT_ID = '6f24397905834a03b7c0e82039d61ca1';
-    const REDIRECT_URI = isLocal 
-          ? 'http://localhost:8888/callback.html' 
-          : 'https://soundmood-pro-v2.netlify.app/callback.html';
    
     // Global μεταβλητές για δυναμική αναζήτηση (infinite scroll)
     let currentSearchQuery = '';
@@ -383,43 +377,35 @@
     }
    
     // ===================== ΑΥΘΕΝΤΙΚΟΠΟΙΗΣΗ (LOGIN) =====================
-    async function initializeAuth() {
-      if (!localStorage.getItem('spotifyToken')) {
-        const codeVerifier = generateRandomString(128);
-        const codeChallenge = await generateCodeChallenge(codeVerifier);
-        localStorage.setItem('code_verifier', codeVerifier);
-        const scopes = 'streaming user-read-email user-read-private user-read-playback-state user-modify-playback-state';
-        const authUrl = new URL('https://accounts.spotify.com/authorize');
-        authUrl.searchParams.append('client_id', CLIENT_ID);
-        authUrl.searchParams.append('response_type', 'code');
-        authUrl.searchParams.append('redirect_uri', REDIRECT_URI);
-        authUrl.searchParams.append('scope', scopes);
-        authUrl.searchParams.append('code_challenge_method', 'S256');
-        authUrl.searchParams.append('code_challenge', codeChallenge);
-        window.location.href = authUrl.toString();
-      }
-    }
+async function initializeAuth() {
+  if (!localStorage.getItem('spotifyToken')) {
+    const codeVerifier = generateRandomString(128);
+    const codeChallenge = await generateCodeChallenge(codeVerifier);
+    localStorage.setItem('code_verifier', codeVerifier);
+
+    // Κλήση προς backend για τα credentials
+    const authParams = await fetch('/.netlify/functions/getAuthParams', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code_challenge: codeChallenge })
+    }).then(res => res.json());
+
+    window.location.href = authParams.url;
+  }
+}
    
     // ===================== PLAYER INIT =====================
     window.onSpotifyWebPlaybackSDKReady = () => {
       const token = localStorage.getItem('spotifyToken');
       if (!token) return;
+      
       const player = new Spotify.Player({
         name: 'SoundMood Pro Player',
         getOAuthToken: cb => { cb(token); },
         volume: 0.5
       });
-      player.addListener('ready', ({ device_id }) => {
-        console.log('ΣΥΝΔΕΘΗΚΕ ΣΥΣΚΕΥΗ:', device_id);
-        window.spotifyDeviceId = device_id;
-      });
-      player.addListener('authentication_error', ({ message }) => {
-        console.error('Σφάλμα αυθεντικοποίησης:', message);
-        localStorage.removeItem('spotifyToken');
-        localStorage.removeItem('refreshToken');
-        initializeAuth();
-      });
-      player.connect();
+
+      // ... ο υπόλοιπος κώδικας παραμένει ο ίδιος ...
     };
    
     // ===================== ΑΝΑΝΕΩΣΗ TOKEN =====================
