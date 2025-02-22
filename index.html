@@ -303,7 +303,7 @@
         <span>Χωρισμός</span>
       </button>
     </div>
-
+   
     <!-- Περιοχή για custom αναζήτηση -->
     <div class="input-area">
       <div class="input-box">
@@ -315,10 +315,10 @@
                 data-en="Search" data-el="Αναζήτηση">Αναζήτηση</button>
       </div>
     </div>
-
+   
     <!-- Περιοχή εμφάνισης αποτελεσμάτων (π.χ. tracks) -->
     <div id="playlistContainer"></div>
-
+   
     <div class="footer-note">
       Developed by Costas Chatzisalis © 2025<br>
       Contact: kouroupa82@gmail.com<br>
@@ -326,7 +326,7 @@
         <img src="https://cdn.ko-fi.com/cdn/kofi3.png" alt="Support" style="height:40px;">
       </a>
     </div>
-
+   
     <div class="disclaimer">
       <span data-en="This app uses Spotify in accordance with" 
             data-el="Η εφαρμογή χρησιμοποιεί το Spotify σύμφωνα με"></span>
@@ -335,7 +335,7 @@
          data-el="τους Όρους Χρήσης του Spotify"></a>
     </div>
   </div>
-
+   
   <!-- General Scripts -->
   <script>
     // ===================== ΡΥΘΜΙΣΕΙΣ =====================
@@ -344,13 +344,13 @@
     const REDIRECT_URI = isLocal 
           ? 'http://localhost:8888/callback.html' 
           : 'https://soundmood-pro-v2.netlify.app/callback.html';
-
+   
     // Global μεταβλητές για δυναμική αναζήτηση (infinite scroll)
     let currentSearchQuery = '';
     let currentOffset = 0;
     const searchLimit = 10;
     let isLoading = false;
-
+   
     // ===================== PKCE HELPERS =====================
     function generateRandomString(length) {
       let text = '';
@@ -369,7 +369,7 @@
                 .replace(/\//g, '_')
                 .replace(/=+$/, '');
     }
-
+   
     // ===================== ΑΥΘΕΝΤΙΚΟΠΟΙΗΣΗ (LOGIN) =====================
     async function initializeAuth() {
       if (!localStorage.getItem('spotifyToken')) {
@@ -387,7 +387,7 @@
         window.location.href = authUrl.toString();
       }
     }
-
+   
     // ===================== PLAYER INIT =====================
     window.onSpotifyWebPlaybackSDKReady = () => {
       const token = localStorage.getItem('spotifyToken');
@@ -409,7 +409,7 @@
       });
       player.connect();
     };
-
+   
     // ===================== ΑΝΑΝΕΩΣΗ TOKEN =====================
     async function refreshToken() {
       try {
@@ -436,7 +436,7 @@
         return null;
       }
     }
-
+   
     // ===================== ΔΥΝΑΜΙΚΗ ΑΝΑΖΗΤΗΣΗ (Infinite Scroll) =====================
     async function fetchSearchResults(query, offset) {
       let token = localStorage.getItem('spotifyToken');
@@ -483,7 +483,7 @@
       }
       isLoading = false;
     }
-
+   
     async function handleCustomGenre() {
       const input = document.querySelector('.genre-input');
       const searchTerm = input.value.trim();
@@ -494,7 +494,7 @@
       container.innerHTML = '';
       await fetchSearchResults(currentSearchQuery, currentOffset);
     }
-
+   
     // ===================== Infinite Scroll Listener =====================
     window.addEventListener('scroll', () => {
       if (isLoading) return;
@@ -504,7 +504,7 @@
         }
       }
     });
-
+   
     // ===================== Static Mood Buttons API Calls =====================
     async function selectMood(moodType) {
       try {
@@ -548,7 +548,7 @@
         alert('Σφάλμα φόρτωσης playlist');
       }
     }
-
+   
     // ===================== Playback Functions =====================
     function playPreview(trackId) {
       fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
@@ -570,7 +570,7 @@
       })
       .catch(error => console.error("Error fetching preview:", error));
     }
-
+   
     function playTrack(trackUri) {
       const parts = trackUri.split(":");
       const trackId = parts[2];
@@ -603,7 +603,7 @@
       })
       .catch(err => console.error("Error checking account type:", err));
     }
-
+   
     function shareTo(platform, contentId) {
       const url = `https://open.spotify.com/playlist/${contentId}`;
       const shareUrls = {
@@ -613,7 +613,7 @@
       };
       window.open(shareUrls[platform], '_blank');
     }
-
+   
     // ===================== Language Functions =====================
     let currentLanguage = 'el';
     function toggleLanguage() {
@@ -627,11 +627,11 @@
         }
       });
     }
-
+   
     // ===================== INIT =====================
     toggleLanguage();
   </script>
-
+   
   <!-- Spotify Web Playback SDK Scripts -->
   <script src="https://sdk.scdn.co/spotify-player.js"></script>
   <script>
