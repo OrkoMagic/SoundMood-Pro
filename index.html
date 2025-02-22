@@ -247,12 +247,14 @@
       cursor: pointer;
     }
   </style>
+ <script src="https://sdk.scdn.co/spotify-player.js"></script>
 </head>
 <body>
   <div class="animated-bg"></div>
   
   <div class="logo">
     <img src="./images/logo.png" alt="SoundMood Pro">
+    <button onclick="getAuthUrl()">Σύνδεση με Spotify</button>
   </div>
 
   <div class="language-toggle" onclick="toggleLanguage()" data-en="EN/GR" data-el="GR/EN">EN/GR</div>
