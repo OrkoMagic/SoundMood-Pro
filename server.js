@@ -13,5 +13,5 @@ app.get('/callback', (req, res) => {
 });
 
 app.listen(port, () => {
-  e.log(`Server running at http://localhost:${port}`);
+  console.log(`Server running at http://localhost:${port}`);
 });

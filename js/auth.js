@@ -1,5 +1,5 @@
 const clientId = 'd049909714344a469f3017b68941e0a2'; 
-const redirectUri = 'http://localhost:5500/callback'; // Προσοχή: ΠΡΕΠΕΙ να είναι ίδιο με το Spotify Dashboard
+const redirectUri ='http://localhost:8888/callback.html'; // Προσοχή: ΠΡΕΠΕΙ να είναι ίδιο με το Spotify Dashboard
 
 // 1. Σύνδεση μόνο αν δεν υπάρχει token
 document.addEventListener('DOMContentLoaded', () => {

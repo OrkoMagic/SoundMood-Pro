@@ -260,7 +260,7 @@
 
     <div class="mood-question" data-en="What's your mood?" data-el="Ποιά είναι η διάθεσή σου;"></div>
 
-    <!-- Κουμπιά επιλογής διάθεσης (στατικά ή όπως είχες) -->
+    <!-- Κουμπιά επιλογής διάθεσης -->
     <div class="mood-grid">
       <button class="mood-btn" onclick="selectMood('love')" data-en="Love" data-el="Αγάπη">
         <i class="fas fa-heart"></i>
@@ -336,9 +336,7 @@
     </div>
   </div>
 
-  <!-- Spotify Web Playback SDK -->
-  <script src="https://sdk.scdn.co/spotify-player.js"></script>
-
+  <!-- General Scripts -->
   <script>
     // ===================== ΡΥΘΜΙΣΕΙΣ =====================
     const isLocal = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
@@ -350,7 +348,7 @@
     // Global μεταβλητές για δυναμική αναζήτηση (infinite scroll)
     let currentSearchQuery = '';
     let currentOffset = 0;
-    const searchLimit = 10;  // Αποτελέσματα ανά φόρτωση
+    const searchLimit = 10;
     let isLoading = false;
 
     // ===================== PKCE HELPERS =====================
@@ -401,6 +399,7 @@
       });
       player.addListener('ready', ({ device_id }) => {
         console.log('ΣΥΝΔΕΘΗΚΕ ΣΥΣΚΕΥΗ:', device_id);
+        window.spotifyDeviceId = device_id;
       });
       player.addListener('authentication_error', ({ message }) => {
         console.error('Σφάλμα αυθεντικοποίησης:', message);
@@ -438,7 +437,7 @@
       }
     }
 
-    // ===================== ΔΥΝΑΜΙΚΗ ΑΝΑΖΗΤΗΣΗ (με Infinite Scroll) =====================
+    // ===================== ΔΥΝΑΜΙΚΗ ΑΝΑΖΗΤΗΣΗ (Infinite Scroll) =====================
     async function fetchSearchResults(query, offset) {
       let token = localStorage.getItem('spotifyToken');
       if (!token) {
@@ -496,7 +495,7 @@
       await fetchSearchResults(currentSearchQuery, currentOffset);
     }
 
-    // ===================== Infinite Scroll =====================
+    // ===================== Infinite Scroll Listener =====================
     window.addEventListener('scroll', () => {
       if (isLoading) return;
       if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
@@ -506,7 +505,7 @@
       }
     });
 
-    // ===================== API ΚΛΗΣΕΙΣ (στατικά κουμπιά διάθεσης) =====================
+    // ===================== API ΚΛΗΣΕΙΣ για στατικά κουμπιά διάθεσης =====================
     async function selectMood(moodType) {
       try {
         let token = localStorage.getItem('spotifyToken');
@@ -605,6 +604,31 @@
 
     // ===================== INIT =====================
     toggleLanguage();
+  </script>
+
+  <!-- Spotify Web Playback SDK Scripts -->
+  <script src="https://sdk.scdn.co/spotify-player.js"></script>
+  <script>
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      const token = localStorage.getItem('spotifyToken');
+      if (!token) return;
+      const player = new Spotify.Player({
+        name: 'SoundMood Pro Player',
+        getOAuthToken: cb => { cb(token); },
+        volume: 0.5
+      });
+      player.addListener('ready', ({ device_id }) => {
+        console.log('ΣΥΝΔΕΘΗΚΕ ΣΥΣΚΕΥΗ:', device_id);
+        window.spotifyDeviceId = device_id;
+      });
+      player.addListener('authentication_error', ({ message }) => {
+        console.error('Σφάλμα αυθεντικοποίησης:', message);
+        localStorage.removeItem('spotifyToken');
+        localStorage.removeItem('refreshToken');
+        initializeAuth();
+      });
+      player.connect();
+    };
   </script>
 </body>
 </html>

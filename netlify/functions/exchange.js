@@ -10,8 +10,12 @@ exports.handler = async (event) => {
         body: JSON.stringify({ error: 'Missing code parameter' })
       };
     }
+
+    // Client ID από το Spotify Developer Dashboard
     const clientId = '6f24397905834a03b7c0e82039d61ca1';
-    const redirectUri = 'https://soundmood-pro-v2.netlify.app/callback.html';
+    // Για τοπική δοκιμή, αλλάζεις το redirectUri αν χρειάζεται:
+    const redirectUri = process.env.REDIRECT_URI || 'http://localhost:8888/callback.html';
+
     const data = new URLSearchParams({
       grant_type: 'authorization_code',
       code,
@@ -19,11 +23,15 @@ exports.handler = async (event) => {
       client_id: clientId,
       code_verifier
     });
+
     const response = await axios.post(
       'https://accounts.spotify.com/api/token',
       data.toString(),
-      { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+      {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+      }
     );
+
     return {
       statusCode: 200,
       body: JSON.stringify({
@@ -36,7 +44,7 @@ exports.handler = async (event) => {
     return {
       statusCode: 400,
       body: JSON.stringify({
-        error: 'Κάτι πήγε στραβά',
+        error: 'Something went wrong',
         details: error.response?.data || error.message
       })
     };
