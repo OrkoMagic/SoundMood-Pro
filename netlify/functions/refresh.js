@@ -1,39 +1,40 @@
 const axios = require('axios');
+const {
+  SPOTIFY_CLIENT_ID: CLIENT_ID,
+  SPOTIFY_CLIENT_SECRET: CLIENT_SECRET,
+  SPOTIFY_REDIRECT_URI: REDIRECT_URI
+} = process.env;
 
 exports.handler = async (event) => {
   try {
-    const { refresh_token } = JSON.parse(event.body || '{}');
-    if (!refresh_token) {
-      return {
-        statusCode: 400,
-        body: JSON.stringify({ error: 'Missing refresh_token' })
-      };
-    }
-    const clientId = '6f24397905834a03b7c0e82039d61ca1';
-    const data = new URLSearchParams({
-      grant_type: 'refresh_token',
-      refresh_token,
-      client_id: clientId
-    });
+    const { code, code_verifier } = JSON.parse(event.body);
+
     const response = await axios.post(
       'https://accounts.spotify.com/api/token',
-      data.toString(),
+      new URLSearchParams({
+        grant_type: 'authorization_code',
+        code,
+        redirect_uri: REDIRECT_URI,
+        client_id: CLIENT_ID,
+        code_verifier,
+        client_secret: CLIENT_SECRET
+      }),
       { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
     );
+
     return {
       statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        access_token: response.data.access_token
+        access_token: response.data.access_token,
+        refresh_token: response.data.refresh_token
       })
     };
   } catch (error) {
-    console.error('Refresh error:', error.response?.data || error.message);
     return {
       statusCode: 400,
-      body: JSON.stringify({
-        error: 'Refresh failed',
-        details: error.response?.data || error.message
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ error: 'Failed to exchange token' })
     };
   }
 };

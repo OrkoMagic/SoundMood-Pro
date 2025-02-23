@@ -85,3 +85,25 @@
     width: 120px;
   }
 }
+
+/* styles.css - Προσθήκη στο ΤΕΛΟΣ */
+.track-details {
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.track-details:hover {
+  opacity: 0.8;
+}
+
+.play-btn {
+  background: var(--secondary-color);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.play-btn:hover {
+  transform: scale(1.05);
+}

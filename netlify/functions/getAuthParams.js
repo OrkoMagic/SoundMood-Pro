@@ -1,4 +1,3 @@
-// netlify/functions/getAuthParams.js
 const {
   SPOTIFY_CLIENT_ID: CLIENT_ID,
   SPOTIFY_REDIRECT_URI: REDIRECT_URI
@@ -18,12 +17,13 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url: authUrl.toString() })
     };
-    
   } catch (error) {
     return {
       statusCode: 400,
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ error: 'Failed to generate auth URL' })
     };
   }

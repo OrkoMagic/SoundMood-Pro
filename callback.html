@@ -1,39 +1,47 @@
 <!DOCTYPE html>
-<html lang="el">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>SoundMood Pro Callback</title>
+  <title>Callback</title>
 </head>
 <body>
-  <h2>Παρακαλώ περιμένετε...</h2>
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get('code');
-    if (!code) {
-      window.location.href = '/';
-    } else {
+    const code = new URLSearchParams(window.location.search).get('code');
+    const error = new URLSearchParams(window.location.search).get('error');
+    
+    if (error) {
+      alert(`Σφάλμα: ${error}`);
+      window.close();
+    }
+
+    if (code) {
       const codeVerifier = localStorage.getItem('code_verifier');
-      fetch('/.netlify/functions/exchange', {
+      
+      // Hardcoded credentials για local testing
+      const clientId = "6f24397905834a03b7c0e82039d61ca1";
+      const clientSecret = "2fb538d433b94a0296124b2888e87eb7"; // Προσθέστε το δικό σας
+      const redirectUri = "http://localhost:8888/callback.html";
+      fetch("https://accounts.spotify.com/api/token", {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, code_verifier: codeVerifier })
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Basic ' + btoa(clientId + ':' + clientSecret)
+        },
+        body: new URLSearchParams({
+          code: code,
+          redirect_uri: redirectUri,
+          grant_type: 'authorization_code',
+          code_verifier: codeVerifier
+        })
       })
       .then(res => res.json())
       .then(data => {
-        if (data.error) {
-          console.error('Exchange error:', data);
-          alert('Σφάλμα κατά την ανταλλαγή κωδικού.');
-          window.location.href = '/';
-        } else {
-          localStorage.setItem('spotifyToken', data.access_token);
-          localStorage.setItem('refreshToken', data.refresh_token);
-          localStorage.removeItem('code_verifier');
-          window.location.href = '/';
-        }
+        localStorage.setItem('spotifyToken', data.access_token);
+        localStorage.setItem('refreshToken', data.refresh_token);
+        window.close();
+        window.opener.location.reload();
       })
       .catch(err => {
-        console.error('Token exchange error:', err);
-        alert('Σφάλμα λήψης token.');
+        console.error('Σφάλμα:', err);
         window.location.href = '/';
       });
     }

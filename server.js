@@ -4,12 +4,12 @@ const app = express();
 const path = require('path');
 const port = 8888;
 
-// Serve static files
+// Σερβίρετε στατικά αρχεία
 app.use(express.static(__dirname));
 
-// Handle callback route
+// Route callback
 app.get('/callback', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, 'callback.html'));
 });
 
 app.listen(port, () => {
