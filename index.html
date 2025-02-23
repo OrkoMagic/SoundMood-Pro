@@ -453,22 +453,26 @@
         const data = await response.json();
         const tracks = data.tracks?.items || [];
         const container = document.getElementById('playlistContainer');
+        
+        // Για κάθε τραγούδι, εμφάνισε ένα embed iframe που παίζει ολόκληρο το τραγούδι.
         container.innerHTML += tracks.map(track => `
-          <div class="track-item" style="margin-bottom:10px;">
-            <div class="track-preview" style="display: flex; gap: 10px; align-items: center;">
-              <img src="${track.album.images[0]?.url || ''}" alt="${track.name}" style="width: 64px; height: 64px; object-fit: cover;">
-              <div class="track-details">
-                <h4 style="margin-bottom: 4px;">${track.name}</h4>
-                <p style="font-size: 0.8em; color: #ccc;">
-                  ${track.artists.map(a => a.name).join(', ')}
-                </p>
-              </div>
-              <button class="play-btn" onclick="playTrack('${track.uri}')" style="margin-left:auto;">
-                <i class="fas fa-play"></i>
-              </button>
+          <div class="playlist-card">
+            <iframe 
+              src="https://open.spotify.com/embed/track/${track.id}"
+              width="100%"
+              height="80"
+              frameborder="0"
+              allowtransparency="true"
+              allow="encrypted-media">
+            </iframe>
+            <div class="social-share">
+              <i class="fab fa-facebook social-icon" onclick="shareTrack('facebook', '${track.id}')"></i>
+              <i class="fab fa-instagram social-icon" onclick="shareTrack('instagram', '${track.id}')"></i>
+              <i class="fab fa-twitter social-icon" onclick="shareTrack('twitter', '${track.id}')"></i>
             </div>
           </div>
         `).join('');
+        
         currentOffset += searchLimit;
       } catch (error) {
         console.error('Σφάλμα στην αναζήτηση:', error);
@@ -509,6 +513,7 @@
         if (response.status === 401) {
           const newToken = await refreshToken();
           if (!newToken) return;
+          // επαναληπτική κλήση
           response = await fetch(`https://api.spotify.com/v1/search?q=${moodType}+mood&type=playlist&limit=10`, {
             headers: { 'Authorization': `Bearer ${newToken}` }
           });
@@ -523,12 +528,14 @@
               <iframe src="https://open.spotify.com/embed/playlist/${playlist.id}" 
                       width="100%" 
                       height="380" 
-                      allow="encrypted-media">
+                      allow="encrypted-media"
+                      frameborder="0"
+                      allowtransparency="true">
               </iframe>
               <div class="social-share">
-                <i class="fab fa-facebook social-icon" onclick="shareTo('facebook', '${playlist.id}')"></i>
-                <i class="fab fa-instagram social-icon" onclick="shareTo('instagram', '${playlist.id}')"></i>
-                <i class="fab fa-twitter social-icon" onclick="shareTo('twitter', '${playlist.id}')"></i>
+                <i class="fab fa-facebook social-icon" onclick="sharePlaylist('facebook', '${playlist.id}')"></i>
+                <i class="fab fa-instagram social-icon" onclick="sharePlaylist('instagram', '${playlist.id}')"></i>
+                <i class="fab fa-twitter social-icon" onclick="sharePlaylist('twitter', '${playlist.id}')"></i>
               </div>
             </div>
           `;
@@ -539,17 +546,21 @@
       }
     }
     
-    // ===================== Playback Functions =====================
-    function playTrack(trackUri) {
-      const parts = trackUri.split(":");
-      const trackId = parts[2];
-      // Αντί για έλεγχο μέσω SDK, ανοίγουμε τον σύνδεσμο του τραγουδιού στο Spotify Web Player
-      window.open(`https://open.spotify.com/track/${trackId}`, '_blank');
+    // ===================== Sharing Functions =====================
+    // Κοινοποίηση Playlist
+    function sharePlaylist(platform, playlistId) {
+      const url = `https://open.spotify.com/playlist/${playlistId}`;
+      const shareUrls = {
+        facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+        instagram: `https://www.instagram.com/?url=${encodeURIComponent(url)}`,
+        twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}`
+      };
+      window.open(shareUrls[platform], '_blank');
     }
-    
-    // ===================== Sharing Function =====================
-    function shareTo(platform, contentId) {
-      const url = `https://open.spotify.com/playlist/${contentId}`;
+
+    // Κοινοποίηση Track
+    function shareTrack(platform, trackId) {
+      const url = `https://open.spotify.com/track/${trackId}`;
       const shareUrls = {
         facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
         instagram: `https://www.instagram.com/?url=${encodeURIComponent(url)}`,
