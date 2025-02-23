@@ -338,7 +338,7 @@
   <script>
     // Δηλώσεις που πρέπει να είναι πριν από οποιαδήποτε χρήση
     const CLIENT_ID = '6f24397905834a03b7c0e82039d61ca1';
-    // currentLanguage δηλωμένο εδώ ώστε να είναι διαθέσιμο σε όλα τα σημεία
+    let currentLanguage = 'en';
     // (δεδομένου ότι το toggleLanguage καλείται από inline onclick)
     // (Δεν αλλάζει το look ή τη δομή της εφαρμογής)
     
@@ -618,17 +618,28 @@
     }
    
     // ===================== Language Functions =====================
-    function toggleLanguage() {
-      currentLanguage = currentLanguage === 'el' ? 'en' : 'el';
-      document.querySelectorAll('[data-en], [data-el]').forEach(el => {
-        const text = el.getAttribute(`data-${currentLanguage}`);
-        if (el.tagName === 'INPUT') {
-          el.placeholder = text;
-        } else {
-          el.textContent = text;
-        }
-      });
+    window.currentLanguage = 'en'; // Ξεκινά στα αγγλικά
+
+function updateLanguage() {
+  document.querySelectorAll('[data-en], [data-el]').forEach(el => {
+    const text = el.getAttribute(`data-${window.currentLanguage}`);
+    if (el.tagName === 'INPUT') {
+      el.placeholder = text;
+    } else {
+      el.textContent = text;
     }
+  });
+}
+
+function toggleLanguage() {
+  window.currentLanguage = window.currentLanguage === 'el' ? 'en' : 'el';
+  updateLanguage();
+}
+
+// Περιμένουμε να φορτωθεί η σελίδα πριν αλλάξουμε γλώσσα
+document.addEventListener("DOMContentLoaded", function() {
+  updateLanguage();
+});
    
     // ===================== INIT =====================
     toggleLanguage();
