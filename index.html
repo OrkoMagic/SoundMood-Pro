@@ -3,8 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Μουσική Εφαρμογή</title>
-  <link rel="stylesheet" href="style.css">
   <title>SoundMood Pro v2</title>
   
   <!-- SEO -->
@@ -249,11 +247,9 @@
 
   <div class="language-toggle" onclick="toggleLanguage()" data-en="EN/GR" data-el="GR/EN">EN/GR</div>
 
-  <div class="header">
-    <img src="logo.png" class="logo" alt="Logo">
-    <div class="buttons-container">
-      <button>Play</button>
-      <button>Pause</button>
+  <div class="container">
+    <div class="header">
+      <span data-en="SoundMood Pro" data-el="SoundMood Pro">SoundMood Pro</span>
     </div>
     
     <!-- Κουμπί σύνδεσης με Spotify -->
@@ -311,7 +307,7 @@
     </div>
    
     <!-- Περιοχή εμφάνισης αποτελεσμάτων (π.χ. tracks/playlists) -->
-    <div id="song-list">
+    <div id="playlistContainer"></div>
    
     <div class="footer-note">
       Developed by Costas Chatzisalis © 2025<br>
@@ -594,46 +590,10 @@
       updateLanguage();
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-  const songList = document.getElementById("song-list"); // Το container των τραγουδιών
-
-  let page = 1; // Αρχική σελίδα
-  let isLoading = false; // Για αποφυγή διπλών αιτημάτων
-
-  async function loadMoreSongs() {
-    if (isLoading) return; // Αν φορτώνει ήδη, μην ξαναφορτώσει
-    isLoading = true;
-
-    try {
-      const response = await fetch(`api/songs?page=${page}`);
-      const newSongs = await response.json();
-
-      newSongs.forEach((song) => {
-        const songItem = document.createElement("div");
-        songItem.classList.add("song");
-        songItem.innerText = song.title;
-        songList.appendChild(songItem);
-      });
-
-      page++; // Επόμενη σελίδα
-    } catch (error) {
-      console.error("Σφάλμα φόρτωσης τραγουδιών:", error);
-    } finally {
-      isLoading = false;
-    }
-  }
-
-  window.addEventListener("scroll", function () {
-    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
-      loadMoreSongs();
-    }
-  });
-
-  loadMoreSongs(); // Φόρτωσε την πρώτη σελίδα τραγουδιών
-});
+    document.addEventListener("DOMContentLoaded", () => {
       localStorage.removeItem('language');
       updateLanguage();
-    
+    });
   </script>
 </body>
 </html>
