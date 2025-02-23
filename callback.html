@@ -1,49 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Callback</title>
+  <meta charset="UTF-8">
+  <title>Spotify Callback</title>
 </head>
 <body>
   <script>
-    const code = new URLSearchParams(window.location.search).get('code');
-    const error = new URLSearchParams(window.location.search).get('error');
-    
-    if (error) {
-      alert(`Σφάλμα: ${error}`);
-      window.close();
-    }
+    // Λήψη των query parameters από το URL
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const error = params.get('error');
 
-    if (code) {
-      const codeVerifier = localStorage.getItem('code_verifier');
-      
-      // Hardcoded credentials για local testing
-      const clientId = "6f24397905834a03b7c0e82039d61ca1";
-      const clientSecret = "2fb538d433b94a0296124b2888e87eb7"; // Προσθέστε το δικό σας
-      const redirectUri = "http://localhost:8888/callback.html";
-      fetch("https://accounts.spotify.com/api/token", {
+    if (error) {
+      console.error('Σφάλμα κατά την αυθεντικοποίηση:', error);
+      // Ανακατεύθυνση στο index σε περίπτωση σφάλματος
+      window.location.href = '/';
+    } else if (code) {
+      // Ανάκτηση του code_verifier που αποθηκεύτηκε στο sessionStorage
+      const codeVerifier = sessionStorage.getItem('code_verifier');
+
+      // Κάνουμε POST αίτηση στο serverless endpoint για ανταλλαγή του κωδικού
+      fetch('/.netlify/functions/auth', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': 'Basic ' + btoa(clientId + ':' + clientSecret)
-        },
-        body: new URLSearchParams({
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           code: code,
-          redirect_uri: redirectUri,
-          grant_type: 'authorization_code',
-          code_verifier: codeVerifier
+          code_verifier: codeVerifier,
+          redirect_uri: window.location.origin + '/callback.html'
         })
       })
-      .then(res => res.json())
+      .then(response => response.json())
       .then(data => {
+        // Αποθήκευση των tokens στο localStorage
         localStorage.setItem('spotifyToken', data.access_token);
         localStorage.setItem('refreshToken', data.refresh_token);
-        window.close();
-        window.opener.location.reload();
+        // Ανακατεύθυνση στην κύρια σελίδα
+        window.location.href = '/';
       })
       .catch(err => {
-        console.error('Σφάλμα:', err);
+        console.error('Σφάλμα στην ανταλλαγή του κωδικού:', err);
         window.location.href = '/';
       });
+    } else {
+      // Αν δεν υπάρχει ούτε code, ανακατευθύνετε στο index
+      window.location.href = '/';
     }
   </script>
 </body>
