@@ -131,17 +131,14 @@
       min-height: 60px;
       backdrop-filter: blur(5px);
       position: relative;
-     
+      
       .mood-grid {
-    position: sticky;
-    top: 0;
-    background: var(--background-dark);
-    z-index: 500;
-}
-
-    
+        position: sticky;
+        top: 0;
+        background: var(--background-dark);
+        z-index: 500;
+      }
     }
-
     .mood-btn:active {
       transform: scale(0.95);
       background: var(--secondary-color);
@@ -254,7 +251,6 @@
   
   <div class="logo">
     <img src="./images/logo.png" alt="SoundMood Pro">
-    
   </div>
 
   <div class="language-toggle" onclick="toggleLanguage()" data-en="EN/GR" data-el="GR/EN">EN/GR</div>
@@ -272,46 +268,36 @@
 
     <div class="mood-question" data-en="What's your mood?" data-el="Ποιά είναι η διάθεσή σου;"></div>
 
-    <!-- Κουμπιά επιλογής διάθεσης -->
+    <!-- Κουμπιά επιλογής διάθεσης (χωρίς εικονίδια) -->
     <div class="mood-grid">
       <button class="mood-btn" onclick="selectMood('love')" data-en="Love" data-el="Αγάπη">
-        <i class="fas fa-heart"></i>
         <span>Αγάπη</span>
       </button>
       <button class="mood-btn" onclick="selectMood('happy')" data-en="Happy" data-el="Χαρά">
-        <i class="fas fa-laugh-beam"></i>
         <span>Χαρά</span>
       </button>
       <button class="mood-btn" onclick="selectMood('sad')" data-en="Sad" data-el="Λύπη">
-        <i class="fas fa-sad-tear"></i>
         <span>Λύπη</span>
       </button>
       <button class="mood-btn" onclick="selectMood('chill')" data-en="Chill" data-el="Χαλαρά">
-        <i class="fas fa-moon"></i>
         <span>Χαλαρά</span>
       </button>
       <button class="mood-btn" onclick="selectMood('party')" data-en="Party" data-el="Πάρτι">
-        <i class="fas fa-glass-cheers"></i>
         <span>Πάρτι</span>
       </button>
       <button class="mood-btn" onclick="selectMood('rainy')" data-en="Rainy Days" data-el="Βροχερές Μέρες">
-        <i class="fas fa-cloud-rain"></i>
         <span>Βροχερές Μέρες</span>
       </button>
       <button class="mood-btn" onclick="selectMood('workout')" data-en="Workout" data-el="Γυμναστική">
-        <i class="fas fa-dumbbell"></i>
         <span>Γυμναστική</span>
       </button>
       <button class="mood-btn" onclick="selectMood('nostalgic')" data-en="Nostalgic" data-el="Νοσταλγία">
-        <i class="fas fa-history"></i>
         <span>Νοσταλγία</span>
       </button>
       <button class="mood-btn" onclick="selectMood('zen')" data-en="Zen" data-el="Διαλογισμός">
-        <i class="fas fa-spa"></i>
         <span>Διαλογισμός</span>
       </button>
       <button class="mood-btn" onclick="selectMood('breakup')" data-en="Break Up" data-el="Χωρισμός">
-        <i class="fas fa-heart-broken"></i>
         <span>Χωρισμός</span>
       </button>
     </div>
@@ -350,7 +336,14 @@
    
   <!-- General Scripts -->
   <script>
+    // Δηλώσεις που πρέπει να είναι πριν από οποιαδήποτε χρήση
+    const CLIENT_ID = '6f24397905834a03b7c0e82039d61ca1';
+    // currentLanguage δηλωμένο εδώ ώστε να είναι διαθέσιμο σε όλα τα σημεία
+    // (δεδομένου ότι το toggleLanguage καλείται από inline onclick)
+    // (Δεν αλλάζει το look ή τη δομή της εφαρμογής)
+    
     // ===================== ΡΥΘΜΙΣΕΙΣ =====================
+    const isLocal = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
     const REDIRECT_URI = isLocal 
       ? 'http://localhost:8888/callback.html' 
       : 'https://soundmood-pro-v2.netlify.app/callback.html';
@@ -360,7 +353,7 @@
     let currentOffset = 0;
     const searchLimit = 10;
     let isLoading = false;
-   
+    
     // ===================== PKCE HELPERS =====================
     function generateRandomString(length) {
       let text = '';
@@ -625,7 +618,6 @@
     }
    
     // ===================== Language Functions =====================
-    let currentLanguage = 'el';
     function toggleLanguage() {
       currentLanguage = currentLanguage === 'el' ? 'en' : 'el';
       document.querySelectorAll('[data-en], [data-el]').forEach(el => {
@@ -643,7 +635,6 @@
   </script>
    
   <!-- Spotify Web Playback SDK Scripts -->
-  
   <script>
     window.onSpotifyWebPlaybackSDKReady = () => {
       const token = localStorage.getItem('spotifyToken');
