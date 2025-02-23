@@ -1,15 +1,13 @@
-# Περιβαλλοντικές μεταβλητές
+# Netlify
+.netlify/
+
+# Node
+node_modules/
 .env
 
-# Εξαρτήσεις Node.js
-node_modules/
+# IDE
+.idea/
+.vscode/
 
-# Παραγόμενα αρχεία
-dist/
-
-# Προσωρινά αρχεία
-*.log
-*.tmp
+# OS
 .DS_Store
-# Local Netlify folder
-.netlify
