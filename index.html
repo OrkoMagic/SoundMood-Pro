@@ -62,7 +62,7 @@
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-    /* Fixed header & top-bar */
+    /* Fixed Header */
     .header {
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       padding: 0.8rem;
@@ -79,18 +79,23 @@
     .header span {
       font-weight: bold;
     }
+    /* Fixed Top Bar (contains Spotify Connect, mood buttons & search) */
     .top-bar {
       position: fixed;
-      top: 60px; /* Ακριβές ύψος header */
+      top: 60px; /* κάτω από το header */
       left: 0;
       width: 100%;
       z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
       background: var(--background-dark);
       padding: 10px 0;
+    }
+    .top-bar .inner {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
     }
     .logo {
       position: fixed;
@@ -99,7 +104,7 @@
       z-index: 1100;
     }
     .logo img {
-      width: 120px;
+      width: 150px;
       height: auto;
       filter: drop-shadow(0 0 5px rgba(255,215,0,0.5));
     }
@@ -122,11 +127,11 @@
       margin: 0 auto;
       padding: 12px;
       flex-grow: 1;
-      margin-top: 180px; /* Αφήνουμε χώρο για το fixed header + top-bar */
+      margin-top: 200px; /* Αφήνουμε χώρο για fixed header + top-bar */
     }
     .mood-question {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       font-size: 1.1em;
       color: var(--accent-color);
     }
@@ -134,7 +139,6 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 8px;
-      margin-bottom: 15px;
     }
     .mood-btn {
       background: rgba(255,255,255,0.1);
@@ -207,7 +211,7 @@
     .social-share {
       display: flex;
       gap: 15px;
-      margin-top: 15px;
+      margin-top: 10px;
       justify-content: center;
     }
     .social-icon {
@@ -222,7 +226,7 @@
     .footer-note {
       font-size: 0.7em;
       line-height: 1.4;
-      margin-top: 10px;
+      margin-top: 20px;
       text-align: center;
       padding: 20px;
       color: #888;
@@ -238,17 +242,15 @@
     /* Responsive adjustments for mobile */
     @media (max-width: 600px) {
       .logo img {
-        width: 100px;
+        width: 120px;
       }
       .mood-grid {
         grid-template-columns: repeat(2, 1fr);
-        max-width: 100%;
-        margin: 0 auto;
       }
     }
     .loginBtn {
       display: block;
-      margin: 10px auto;
+      margin: 0 auto;
       padding: 10px 20px;
       background: var(--secondary-color);
       color: #fff;
@@ -272,23 +274,45 @@
     <span data-en="SoundMood Pro" data-el="SoundMood Pro">SoundMood Pro</span>
   </div>
   
-  <!-- Fixed Top Bar (Spotify Connect & Mood Buttons) -->
+  <!-- Fixed Top Bar -->
   <div class="top-bar">
-    <button class="loginBtn" onclick="initializeAuth()" data-en="Connect with Spotify" data-el="Σύνδεση με Spotify">
-      Connect with Spotify
-    </button>
-    <div class="mood-question" data-en="What's your mood?" data-el="How's your mood?"></div>
-    <div class="mood-grid">
-      <button class="mood-btn" onclick="selectMood('love')" data-en="Love" data-el="Love"><span>Love</span></button>
-      <button class="mood-btn" onclick="selectMood('happy')" data-en="Happy" data-el="Happy"><span>Happy</span></button>
-      <button class="mood-btn" onclick="selectMood('sad')" data-en="Sad" data-el="Sad"><span>Sad</span></button>
-      <button class="mood-btn" onclick="selectMood('chill')" data-en="Chill" data-el="Chill"><span>Chill</span></button>
-      <button class="mood-btn" onclick="selectMood('party')" data-en="Party" data-el="Party"><span>Party</span></button>
-      <button class="mood-btn" onclick="selectMood('rainy')" data-en="Rainy Days" data-el="Rainy Days"><span>Rainy Days</span></button>
-      <button class="mood-btn" onclick="selectMood('workout')" data-en="Workout" data-el="Workout"><span>Workout</span></button>
-      <button class="mood-btn" onclick="selectMood('nostalgic')" data-en="Nostalgic" data-el="Nostalgic"><span>Nostalgic</span></button>
-      <button class="mood-btn" onclick="selectMood('zen')" data-en="Zen" data-el="Zen"><span>Zen</span></button>
-      <button class="mood-btn" onclick="selectMood('breakup')" data-en="Break Up" data-el="Break Up"><span>Break Up</span></button>
+    <div class="inner">
+      <button class="loginBtn" onclick="initializeAuth()" data-en="Connect with Spotify" data-el="Σύνδεση με Spotify">
+        Connect with Spotify
+      </button>
+      <div class="mood-question" data-en="What's your mood?" data-el="Ποιά είναι η διάθεσή σου?"></div>
+      <div class="mood-grid">
+        <button class="mood-btn" onclick="selectMood('love')" data-en="Love" data-el="Love">
+          <i class="fas fa-heart"></i><span>Love</span>
+        </button>
+        <button class="mood-btn" onclick="selectMood('happy')" data-en="Happy" data-el="Happy">
+          <i class="fas fa-laugh-beam"></i><span>Happy</span>
+        </button>
+        <button class="mood-btn" onclick="selectMood('sad')" data-en="Sad" data-el="Sad">
+          <i class="fas fa-sad-tear"></i><span>Sad</span>
+        </button>
+        <button class="mood-btn" onclick="selectMood('chill')" data-en="Chill" data-el="Chill">
+          <i class="fas fa-moon"></i><span>Chill</span>
+        </button>
+        <button class="mood-btn" onclick="selectMood('party')" data-en="Party" data-el="Party">
+          <i class="fas fa-glass-cheers"></i><span>Party</span>
+        </button>
+        <button class="mood-btn" onclick="selectMood('rainy')" data-en="Rainy Days" data-el="Rainy Days">
+          <i class="fas fa-cloud-rain"></i><span>Rainy Days</span>
+        </button>
+        <button class="mood-btn" onclick="selectMood('workout')" data-en="Workout" data-el="Workout">
+          <i class="fas fa-dumbbell"></i><span>Workout</span>
+        </button>
+        <button class="mood-btn" onclick="selectMood('nostalgic')" data-en="Nostalgic" data-el="Nostalgic">
+          <i class="fas fa-history"></i><span>Nostalgic</span>
+        </button>
+        <button class="mood-btn" onclick="selectMood('zen')" data-en="Zen" data-el="Zen">
+          <i class="fas fa-spa"></i><span>Zen</span>
+        </button>
+        <button class="mood-btn" onclick="selectMood('breakup')" data-en="Break Up" data-el="Break Up">
+          <i class="fas fa-heart-broken"></i><span>Break Up</span>
+        </button>
+      </div>
     </div>
   </div>
   
@@ -322,11 +346,11 @@
   <!-- General Scripts -->
   <script>
     // ===================== SETTINGS =====================
-    const isLocal = window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1';
-    const SPOTIFY_CLIENT_ID = '6f24397905834a03b7c0e82039d61ca1';
-    const SPOTIFY_REDIRECT_URI = isLocal 
-      ? 'http://localhost:8888/callback.html' 
-      : 'https://soundmood-pro-v2.netlify.app/callback.html';
+    const isLocal = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    const CLIENT_ID = '6f24397905834a03b7c0e82039d61ca1';
+    const REDIRECT_URI = isLocal 
+          ? 'http://localhost:8888/callback.html' 
+          : 'https://soundmood-pro-v2.netlify.app/callback.html';
    
     // Global variables for dynamic search
     let currentSearchQuery = '';
@@ -343,32 +367,32 @@
       }
       return text;
     }
-
     async function generateCodeChallenge(codeVerifier) {
       const encoder = new TextEncoder();
       const data = encoder.encode(codeVerifier);
       const digest = await window.crypto.subtle.digest('SHA-256', data);
       return btoa(String.fromCharCode(...new Uint8Array(digest)))
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '');
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=+$/, '');
     }
     
     // ===================== AUTHENTICATION (LOGIN) =====================
     async function initializeAuth() {
-      const codeVerifier = generateRandomString(128);
-      const codeChallenge = await generateCodeChallenge(codeVerifier);
-      sessionStorage.setItem('code_verifier', codeVerifier);
-
-      const authUrl = new URL('https://accounts.spotify.com/authorize');
-      authUrl.searchParams.append('client_id', SPOTIFY_CLIENT_ID);
-      authUrl.searchParams.append('response_type', 'code');
-      authUrl.searchParams.append('redirect_uri', SPOTIFY_REDIRECT_URI);
-      authUrl.searchParams.append('scope', 'streaming user-read-email user-read-private user-read-playback-state user-modify-playback-state');
-      authUrl.searchParams.append('code_challenge_method', 'S256');
-      authUrl.searchParams.append('code_challenge', codeChallenge);
-
-      window.location.href = authUrl.toString();
+      if (!localStorage.getItem('spotifyToken')) {
+        const codeVerifier = generateRandomString(128);
+        const codeChallenge = await generateCodeChallenge(codeVerifier);
+        localStorage.setItem('code_verifier', codeVerifier);
+        const scopes = 'streaming user-read-email user-read-private user-read-playback-state user-modify-playback-state';
+        const authUrl = new URL('https://accounts.spotify.com/authorize');
+        authUrl.searchParams.append('client_id', CLIENT_ID);
+        authUrl.searchParams.append('response_type', 'code');
+        authUrl.searchParams.append('redirect_uri', REDIRECT_URI);
+        authUrl.searchParams.append('scope', scopes);
+        authUrl.searchParams.append('code_challenge_method', 'S256');
+        authUrl.searchParams.append('code_challenge', codeChallenge);
+        window.location.href = authUrl.toString();
+      }
     }
     
     // ===================== TOKEN REFRESH =====================
@@ -380,12 +404,10 @@
         await initializeAuth();
         return null;
       }
-
       try {
         const response = await fetch('https://api.spotify.com/v1/me', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        
         if (response.status === 401) throw new Error('Token expired');
         return token;
       } catch (error) {
@@ -394,23 +416,19 @@
         return token;
       }
     }
-
     async function refreshToken() {
       const refreshTokenStored = localStorage.getItem('refreshToken');
       if (!refreshTokenStored) {
         await initializeAuth();
         return null;
       }
-
       try {
         const response = await fetch('/.netlify/functions/auth', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ refresh_token: refreshTokenStored })
         });
-        
         if (!response.ok) throw new Error('Refresh failed');
-        
         const data = await response.json();
         localStorage.setItem('spotifyToken', data.access_token);
         return data.access_token;
@@ -446,8 +464,7 @@
         const data = await response.json();
         const tracks = data.tracks?.items || [];
         const container = document.getElementById('playlistContainer');
-        
-        // Χρησιμοποιούμε embed iframes χωρίς autoplay (για πλήρη αναπαραγωγή)
+        // Χρησιμοποιούμε embed iframes για πλήρη αναπαραγωγή (χωρίς autoplay)
         container.innerHTML += tracks.map(track => `
           <div class="playlist-card">
             <iframe 
@@ -465,7 +482,6 @@
             </div>
           </div>
         `).join('');
-        
         currentOffset += searchLimit;
       } catch (error) {
         console.error('Error fetching search results:', error);
@@ -501,18 +517,17 @@
     
     // ===================== STATIC MOOD BUTTONS (for playlists) =====================
     async function selectMood(moodType) {
-      const token = await checkAndRefreshToken();
+      let token = await checkAndRefreshToken();
       if (!token) return;
-
       try {
-        const response = await fetch(`https://api.spotify.com/v1/search?q=${moodType}+mood&type=playlist&limit=10`, {
+        let response = await fetch(`https://api.spotify.com/v1/search?q=${moodType}+mood&type=playlist&limit=10`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (response.status === 401) {
-          const newToken = await refreshToken();
-          if (!newToken) return;
+          token = await refreshToken();
+          if (!token) return;
           response = await fetch(`https://api.spotify.com/v1/search?q=${moodType}+mood&type=playlist&limit=10`, {
-            headers: { 'Authorization': `Bearer ${newToken}` }
+            headers: { 'Authorization': `Bearer ${token}` }
           });
         }
         const data = await response.json();
@@ -553,7 +568,6 @@
       };
       window.open(shareUrls[platform], '_blank');
     }
-
     function shareTrack(platform, trackId) {
       const url = `https://open.spotify.com/track/${trackId}`;
       const shareUrls = {
@@ -566,43 +580,52 @@
     
     // ===================== LANGUAGE FUNCTIONS =====================
     let currentLanguage = 'en';
-
     function updateLanguage() {
       document.querySelectorAll('[data-en], [data-el]').forEach(el => {
-        const textEn = el.getAttribute('data-en');
-        const textEl = el.getAttribute('data-el');
-        // Αν το στοιχείο είναι ένα link ή άλλο, ενημέρωσε το textContent
-        if (currentLanguage === 'en') {
-          if(el.tagName === 'INPUT'){
-            el.placeholder = textEn;
-          } else {
-            el.textContent = textEn;
-          }
+        const text = el.getAttribute(`data-${currentLanguage}`);
+        if (el.tagName === 'INPUT') {
+          el.placeholder = text;
         } else {
-          if(el.tagName === 'INPUT'){
-            el.placeholder = textEl;
-          } else {
-            el.textContent = textEl;
-          }
+          el.textContent = text;
         }
       });
       document.documentElement.lang = currentLanguage;
     }
-
     function toggleLanguage() {
       currentLanguage = (currentLanguage === 'en') ? 'el' : 'en';
       localStorage.setItem('language', currentLanguage);
       updateLanguage();
     }
-
     document.addEventListener("DOMContentLoaded", () => {
-      // Εάν υπάρχει αποθηκευμένη γλώσσα, χρησιμοποιήστε την
       const savedLang = localStorage.getItem('language');
-      if(savedLang) {
-        currentLanguage = savedLang;
-      }
+      if (savedLang) currentLanguage = savedLang;
       updateLanguage();
     });
+  </script>
+  
+  <!-- (Αποσπάσματα παλαιού Spotify SDK αν χρειάζεται, αλλιώς μπορείς να το αφαιρέσεις αν δεν το χρησιμοποιείς) -->
+  <script src="https://sdk.scdn.co/spotify-player.js"></script>
+  <script>
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      const token = localStorage.getItem('spotifyToken');
+      if (!token) return;
+      const player = new Spotify.Player({
+        name: 'SoundMood Pro Player',
+        getOAuthToken: cb => { cb(token); },
+        volume: 0.5
+      });
+      player.addListener('ready', ({ device_id }) => {
+        console.log('Device connected:', device_id);
+        window.spotifyDeviceId = device_id;
+      });
+      player.addListener('authentication_error', ({ message }) => {
+        console.error('Authentication error:', message);
+        localStorage.removeItem('spotifyToken');
+        localStorage.removeItem('refreshToken');
+        initializeAuth();
+      });
+      player.connect();
+    };
   </script>
 </body>
 </html>
