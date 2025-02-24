@@ -27,9 +27,7 @@ exports.handler = async (event, context) => {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: params.toString()
       });
-
       const data = await response.json();
-
       if (response.ok) {
         return {
           statusCode: 200,
@@ -59,9 +57,7 @@ exports.handler = async (event, context) => {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: params.toString()
       });
-
       const data = await response.json();
-
       if (response.ok) {
         return {
           statusCode: 200,
