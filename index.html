@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SoundMood Pro v2</title>
   
   <!-- SEO -->
-  <meta name="description" content="Find the perfect playlist for every mood!">
-  <meta name="keywords" content="music, mood, spotify, playlist">
-  <meta name="author" content="Costas Chatzisalis">
-  <meta name="robots" content="index,follow">
+  <meta name="description" content="Find the perfect playlist for every mood!" />
+  <meta name="keywords" content="music, mood, spotify, playlist" />
+  <meta name="author" content="Costas Chatzisalis" />
+  <meta name="robots" content="index,follow" />
 
   <!-- Social Media -->
-  <meta property="og:title" content="SoundMood Pro v2">
-  <meta property="og:description" content="Find the perfect playlist for every mood!">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="https://yourdomain.com/images/social-preview.jpg">
-  <meta property="og:url" content="https://yourdomain.com">
-  <meta name="twitter:card" content="summary_large_image">
+  <meta property="og:title" content="SoundMood Pro v2" />
+  <meta property="og:description" content="Find the perfect playlist for every mood!" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://yourdomain.com/images/social-preview.jpg" />
+  <meta property="og:url" content="https://yourdomain.com" />
+  <meta name="twitter:card" content="summary_large_image" />
 
   <!-- Font Awesome (icons) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 
   <style>
     :root {
@@ -73,6 +73,7 @@
       height: auto;
       filter: drop-shadow(0 0 5px rgba(255,215,0,0.5));
     }
+    /* Language Toggle Button – δείχνει το target γλώσσας */
     .language-toggle {
       position: fixed;
       top: 18px;
@@ -186,6 +187,10 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    /* Για αποφυγή διπλού click – ο container του iframe αποτρέπει την μετάδοση του click */
+    .iframe-container {
+      pointer-events: none;
+    }
     .social-share {
       display: flex;
       gap: 15px;
@@ -237,16 +242,31 @@
       border: none;
       cursor: pointer;
     }
+    /* Στυλ για το Play Full Track button (εμφανίζεται μόνο αν ο χρήστης είναι συνδεδεμένος) */
+    .play-btn {
+      margin-top: 5px;
+      padding: 5px 10px;
+      background: var(--secondary-color);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+    .play-btn:hover {
+      opacity: 0.8;
+    }
   </style>
 </head>
 <body>
   <div class="animated-bg"></div>
   
   <div class="logo">
-    <img src="./images/logo.png" alt="SoundMood Pro">
+    <img src="./images/logo.png" alt="SoundMood Pro" />
   </div>
 
-  <div class="language-toggle" onclick="toggleLanguage()" data-en="EN/GR" data-el="EN/GR">EN/GR</div>
+  <!-- Το κουμπί γλώσσας τώρα δείχνει το target: αν είμαστε στα αγγλικά, γράφει "Ελληνικά", αλλιώς "English" -->
+  <div class="language-toggle" onclick="toggleLanguage()" data-en="EN/GR" data-el="EN/GR">Ελληνικά</div>
 
   <div class="container">
     <div class="header">
@@ -255,11 +275,11 @@
     
     <!-- Spotify Connect Button -->
     <button class="loginBtn" onclick="initializeAuth()"
-            data-en="Connect with Spotify" data-el="Connect with Spotify">
+            data-en="Connect with Spotify" data-el="Σύνδεση με Spotify">
       Connect with Spotify
     </button>
 
-    <div class="mood-question" data-en="What's your mood?" data-el="What's your mood?"></div>
+    <div class="mood-question" data-en="What's your mood?" data-el="Πώς είσαι?">What's your mood?</div>
 
     <!-- Mood Buttons -->
     <div class="mood-grid">
@@ -301,9 +321,9 @@
         <input type="text" class="genre-input" 
                placeholder="Select music genre or your favorite artist!"
                data-en="Select music genre or your favorite artist!"
-               data-el="Select music genre or your favorite artist!">
+               data-el="Επίλεξε είδος ή αγαπημένο καλλιτέχνη!" />
         <button class="send-btn" onclick="handleCustomGenre()" 
-                data-en="Search" data-el="Search">Search</button>
+                data-en="Search" data-el="Αναζήτηση">Search</button>
       </div>
     </div>
    
@@ -311,36 +331,28 @@
     <div id="playlistContainer"></div>
    
     <div class="footer-note">
-      OrkoMagic @2025<br>
-      Contact: kouroupa82@gmail.com<br>
+      OrkoMagic @2025<br />
+      Contact: kouroupa82@gmail.com<br />
       <a href="https://ko-fi.com/OrkoMagic" target="_blank">
-        <img src="https://cdn.ko-fi.com/cdn/kofi3.png" alt="Support" style="height:40px;">
+        <img src="https://cdn.ko-fi.com/cdn/kofi3.png" alt="Support" style="height:40px;" />
       </a>
     </div>
    
     <div class="disclaimer">
-      <span data-en="This app uses Spotify in accordance with" data-el="This app uses Spotify in accordance with"></span>
-      <a href="https://www.spotify.com/legal/end-user-agreement/" target="_blank" data-en="Spotify's Terms of Service" data-el="Spotify's Terms of Service">Spotify's Terms of Service</a>
+      <span data-en="This app uses Spotify in accordance with" data-el="Η εφαρμογή χρησιμοποιεί το Spotify σύμφωνα με"></span>
+      <a href="https://www.spotify.com/legal/end-user-agreement/" target="_blank" data-en="Spotify's Terms of Service" data-el="Όρους Χρήσης του Spotify">Spotify's Terms of Service</a>
     </div>
   </div>
    
   <!-- General Scripts -->
   <script>
-    // ===================== SETTINGS =====================
+    /* ---------------- SETTINGS & PKCE HELPERS ---------------- */
     const isLocal = window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1';
     const SPOTIFY_CLIENT_ID = '6f24397905834a03b7c0e82039d61ca1';
     const SPOTIFY_REDIRECT_URI = isLocal 
       ? 'http://localhost:8888/callback.html' 
       : 'https://soundmood-pro-v2.netlify.app/callback.html';
-   
-    // Global variables for dynamic search & infinite scroll
-    let currentSearchQuery = '';
-    let currentOffset = 0;
-    const searchLimit = 10;
-    let isLoading = false;
-    let refreshPromptShown = false;
-    
-    // ===================== PKCE HELPERS =====================
+
     function generateRandomString(length) {
       let text = '';
       const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
@@ -349,7 +361,6 @@
       }
       return text;
     }
-
     async function generateCodeChallenge(codeVerifier) {
       const encoder = new TextEncoder();
       const data = encoder.encode(codeVerifier);
@@ -360,7 +371,7 @@
         .replace(/=+$/, '');
     }
     
-    // ===================== AUTHENTICATION (LOGIN) =====================
+    /* ---------------- AUTHENTICATION ---------------- */
     async function initializeAuth() {
       const codeVerifier = generateRandomString(128);
       const codeChallenge = await generateCodeChallenge(codeVerifier);
@@ -376,15 +387,12 @@
 
       window.location.href = authUrl.toString();
     }
-    
-    // ===================== TOKEN REFRESH =====================
     async function checkAndRefreshToken() {
       let token = localStorage.getItem('spotifyToken');
       if (!token) {
         await initializeAuth();
         return null;
       }
-
       try {
         const response = await fetch('https://api.spotify.com/v1/me', {
           headers: { 'Authorization': `Bearer ${token}` }
@@ -397,14 +405,12 @@
         return token;
       }
     }
-
     async function refreshToken() {
       const refreshTokenStored = localStorage.getItem('refreshToken');
       if (!refreshTokenStored) {
         await initializeAuth();
         return null;
       }
-
       try {
         const response = await fetch('/.netlify/functions/auth', {
           method: 'POST',
@@ -423,7 +429,7 @@
       }
     }
     
-    // ===================== DYNAMIC SEARCH (for tracks) =====================
+    /* ---------------- DYNAMIC SEARCH & PLAYBACK ---------------- */
     async function fetchSearchResults(query, offset) {
       let token = localStorage.getItem('spotifyToken');
       if (!token) {
@@ -449,14 +455,18 @@
         const container = document.getElementById('playlistContainer');
         container.innerHTML += tracks.map(track => `
           <div class="playlist-card">
-            <iframe 
-              src="https://open.spotify.com/embed/track/${track.id}"
-              width="100%"
-              height="80"
-              frameborder="0"
-              allowtransparency="true"
-              allow="encrypted-media">
-            </iframe>
+            <div class="iframe-container" onclick="preventIframeClick(event)">
+              <iframe 
+                src="https://open.spotify.com/embed/track/${track.id}"
+                width="100%"
+                height="80"
+                frameborder="0"
+                allowtransparency="true"
+                allow="encrypted-media">
+              </iframe>
+            </div>
+            <button class="play-btn" onclick="playFullTrack('${track.id}')"
+              data-en="Play Full Track" data-el="Αναπαραγωγή πλήρως">Play Full Track</button>
             <div class="social-share">
               <i class="fab fa-facebook social-icon" onclick="shareTrack('facebook', '${track.id}')"></i>
               <i class="fab fa-instagram social-icon" onclick="shareTrack('instagram', '${track.id}')"></i>
@@ -470,7 +480,6 @@
       }
       isLoading = false;
     }
-    
     async function handleCustomGenre() {
       const input = document.querySelector('.genre-input');
       const searchTerm = input.value.trim();
@@ -481,8 +490,6 @@
       container.innerHTML = '';
       await fetchSearchResults(currentSearchQuery, currentOffset);
     }
-    
-    // ===================== STATIC MOOD BUTTONS (for playlists) =====================
     async function selectMood(moodType) {
       const token = await checkAndRefreshToken();
       if (!token) return;
@@ -504,13 +511,15 @@
           if (!playlist || !playlist.id) return '';
           return `
             <div class="playlist-card">
-              <iframe src="https://open.spotify.com/embed/playlist/${playlist.id}" 
-                      width="100%" 
-                      height="380" 
-                      allow="encrypted-media"
-                      frameborder="0"
-                      allowtransparency="true">
-              </iframe>
+              <div class="iframe-container" onclick="preventIframeClick(event)">
+                <iframe src="https://open.spotify.com/embed/playlist/${playlist.id}" 
+                        width="100%" 
+                        height="380" 
+                        allow="encrypted-media"
+                        frameborder="0"
+                        allowtransparency="true">
+                </iframe>
+              </div>
               <div class="social-share">
                 <i class="fab fa-facebook social-icon" onclick="sharePlaylist('facebook', '${playlist.id}')"></i>
                 <i class="fab fa-instagram social-icon" onclick="sharePlaylist('instagram', '${playlist.id}')"></i>
@@ -525,7 +534,7 @@
       }
     }
     
-    // ===================== SHARING FUNCTIONS =====================
+    /* ---------------- SHARING FUNCTIONS ---------------- */
     function sharePlaylist(platform, playlistId) {
       const url = `https://open.spotify.com/playlist/${playlistId}`;
       const shareUrls = {
@@ -535,7 +544,6 @@
       };
       window.open(shareUrls[platform], '_blank');
     }
-
     function shareTrack(platform, trackId) {
       const url = `https://open.spotify.com/track/${trackId}`;
       const shareUrls = {
@@ -546,7 +554,35 @@
       window.open(shareUrls[platform], '_blank');
     }
     
-    // ===================== LANGUAGE FUNCTIONS =====================
+    /* ---------------- PLAY FULL TRACK FUNCTION ---------------- */
+    async function playFullTrack(trackId) {
+      let token = localStorage.getItem('spotifyToken');
+      if (!token) { 
+        alert('Please connect with Spotify to play full tracks.');
+        return;
+      }
+      try {
+        await fetch('https://api.spotify.com/v1/me/player/play', {
+          method: 'PUT',
+          headers: {
+             'Content-Type': 'application/json',
+             'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ uris: [`spotify:track:${trackId}`] })
+        });
+      } catch (error) {
+        console.error('Error playing full track:', error);
+        alert('Error playing track. Ensure you have an active Spotify device.');
+      }
+    }
+    
+    /* ---------------- PREVENT IFRAME CLICK PROPAGATION ---------------- */
+    function preventIframeClick(event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    
+    /* ---------------- LANGUAGE FUNCTIONS ---------------- */
     let currentLanguage = 'en';
     function updateLanguage() {
       document.querySelectorAll('[data-en], [data-el]').forEach(el => {
@@ -557,6 +593,11 @@
         }
       });
       document.documentElement.lang = currentLanguage;
+      // Το κουμπί γλώσσας δείχνει το target: αν είμαστε στα "en", δείχνει "Ελληνικά"
+      const langToggle = document.querySelector('.language-toggle');
+      if (langToggle) {
+        langToggle.textContent = currentLanguage === 'en' ? 'Ελληνικά' : 'English';
+      }
     }
     function toggleLanguage() {
       currentLanguage = (currentLanguage === 'en') ? 'el' : 'en';
@@ -565,11 +606,11 @@
     }
     document.addEventListener("DOMContentLoaded", () => {
       const savedLang = localStorage.getItem('language');
-      if(savedLang) currentLanguage = savedLang;
+      if (savedLang) currentLanguage = savedLang;
       updateLanguage();
     });
     
-    // ===================== INFINITE SCROLL & REFRESH PROMPT =====================
+    /* ---------------- INFINITE SCROLL & REFRESH PROMPT ---------------- */
     function showRefreshMessage() {
       refreshPromptShown = true;
       const container = document.getElementById('playlistContainer');
