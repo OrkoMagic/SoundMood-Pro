@@ -62,7 +62,7 @@
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-    /* Fixed header (logo, language toggle, Spotify Connect, mood buttons) */
+    /* Fixed header & top-bar */
     .header {
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       padding: 0.8rem;
@@ -79,13 +79,18 @@
     .header span {
       font-weight: bold;
     }
-    /* Στοιχεία πάνω από το scroll */
     .top-bar {
+      position: fixed;
+      top: 60px; /* Ακριβές ύψος header */
+      left: 0;
+      width: 100%;
+      z-index: 1000;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 8px;
-      margin-top: 70px; /* Για να μην καλύπτει το fixed header */
+      background: var(--background-dark);
+      padding: 10px 0;
     }
     .logo {
       position: fixed;
@@ -94,7 +99,7 @@
       z-index: 1100;
     }
     .logo img {
-      width: 150px; /* Μικρότερο για κινητά */
+      width: 120px;
       height: auto;
       filter: drop-shadow(0 0 5px rgba(255,215,0,0.5));
     }
@@ -117,7 +122,7 @@
       margin: 0 auto;
       padding: 12px;
       flex-grow: 1;
-      margin-top: 130px; /* Αφήνουμε χώρο για το fixed header + top-bar */
+      margin-top: 180px; /* Αφήνουμε χώρο για το fixed header + top-bar */
     }
     .mood-question {
       text-align: center;
@@ -233,7 +238,7 @@
     /* Responsive adjustments for mobile */
     @media (max-width: 600px) {
       .logo img {
-        width: 120px;
+        width: 100px;
       }
       .mood-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -260,19 +265,19 @@
   <div class="logo">
     <img src="./images/logo.png" alt="SoundMood Pro">
   </div>
-  <div class="language-toggle" onclick="toggleLanguage()" data-en="EN/GR" data-el="EN/GR">EN/GR</div>
+  <div class="language-toggle" onclick="toggleLanguage()" data-en="EN/GR" data-el="ΕΛ/GR">EN/GR</div>
   
   <!-- Fixed Header -->
   <div class="header">
     <span data-en="SoundMood Pro" data-el="SoundMood Pro">SoundMood Pro</span>
   </div>
   
-  <!-- Top Bar (Spotify Connect Button & Mood Buttons) -->
+  <!-- Fixed Top Bar (Spotify Connect & Mood Buttons) -->
   <div class="top-bar">
-    <button class="loginBtn" onclick="initializeAuth()" data-en="Connect with Spotify" data-el="Connect with Spotify">
+    <button class="loginBtn" onclick="initializeAuth()" data-en="Connect with Spotify" data-el="Σύνδεση με Spotify">
       Connect with Spotify
     </button>
-    <div class="mood-question" data-en="What's your mood?" data-el="What's your mood?"></div>
+    <div class="mood-question" data-en="What's your mood?" data-el="How's your mood?"></div>
     <div class="mood-grid">
       <button class="mood-btn" onclick="selectMood('love')" data-en="Love" data-el="Love"><span>Love</span></button>
       <button class="mood-btn" onclick="selectMood('happy')" data-en="Happy" data-el="Happy"><span>Happy</span></button>
@@ -292,7 +297,7 @@
     <!-- Custom Genre/Artist Search -->
     <div class="input-area">
       <div class="input-box">
-        <input type="text" class="genre-input" placeholder="Select music genre or your favorite artist!" data-en="Select music genre or your favorite artist!" data-el="Select music genre or your favorite artist!">
+        <input type="text" class="genre-input" placeholder="Select music genre or your favorite artist!" data-en="Select music genre or your favorite artist!" data-el="Επιλέξτε είδος μουσικής ή αγαπημένο καλλιτέχνη!">
         <button class="send-btn" onclick="handleCustomGenre()" data-en="Search" data-el="Search">Search</button>
       </div>
     </div>
@@ -442,16 +447,16 @@
         const tracks = data.tracks?.items || [];
         const container = document.getElementById('playlistContainer');
         
-        // Χρησιμοποιούμε embed iframes (με autoplay=1 αν είναι δυνατόν)
+        // Χρησιμοποιούμε embed iframes χωρίς autoplay (για πλήρη αναπαραγωγή)
         container.innerHTML += tracks.map(track => `
           <div class="playlist-card">
             <iframe 
-              src="https://open.spotify.com/embed/track/${track.id}?autoplay=1"
+              src="https://open.spotify.com/embed/track/${track.id}"
               width="100%"
               height="80"
               frameborder="0"
               allowtransparency="true"
-              allow="autoplay; encrypted-media">
+              allow="encrypted-media">
             </iframe>
             <div class="social-share">
               <i class="fab fa-facebook social-icon" onclick="shareTrack('facebook', '${track.id}')"></i>
@@ -480,14 +485,18 @@
     }
     
     // ===================== INFINITE SCROLL =====================
+    let scrollTimeout;
     window.addEventListener('scroll', () => {
-      // Χρησιμοποιούμε document.documentElement.scrollHeight για μεγαλύτερη ακρίβεια
-      if (isLoading) return;
-      if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 200) {
-        if (currentSearchQuery !== '') {
-          fetchSearchResults(currentSearchQuery, currentOffset);
+      if (scrollTimeout) return;
+      scrollTimeout = setTimeout(() => {
+        scrollTimeout = null;
+        if (isLoading) return;
+        if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 200) {
+          if (currentSearchQuery !== '') {
+            fetchSearchResults(currentSearchQuery, currentOffset);
+          }
         }
-      }
+      }, 200);
     });
     
     // ===================== STATIC MOOD BUTTONS (for playlists) =====================
@@ -560,25 +569,38 @@
 
     function updateLanguage() {
       document.querySelectorAll('[data-en], [data-el]').forEach(el => {
-        const text = el.getAttribute(`data-${currentLanguage}`);
-        if (el.tagName === 'INPUT') {
-          el.placeholder = text || '';
+        const textEn = el.getAttribute('data-en');
+        const textEl = el.getAttribute('data-el');
+        // Αν το στοιχείο είναι ένα link ή άλλο, ενημέρωσε το textContent
+        if (currentLanguage === 'en') {
+          if(el.tagName === 'INPUT'){
+            el.placeholder = textEn;
+          } else {
+            el.textContent = textEn;
+          }
         } else {
-          el.textContent = text || '';
+          if(el.tagName === 'INPUT'){
+            el.placeholder = textEl;
+          } else {
+            el.textContent = textEl;
+          }
         }
       });
       document.documentElement.lang = currentLanguage;
     }
 
     function toggleLanguage() {
-      // Always force English for terms and overall app
-      currentLanguage = 'en';
+      currentLanguage = (currentLanguage === 'en') ? 'el' : 'en';
       localStorage.setItem('language', currentLanguage);
       updateLanguage();
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      localStorage.removeItem('language');
+      // Εάν υπάρχει αποθηκευμένη γλώσσα, χρησιμοποιήστε την
+      const savedLang = localStorage.getItem('language');
+      if(savedLang) {
+        currentLanguage = savedLang;
+      }
       updateLanguage();
     });
   </script>
