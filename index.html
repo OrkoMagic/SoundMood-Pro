@@ -1,27 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="el">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SoundMood Pro v2</title>
   
   <!-- SEO -->
-  <meta name="description" content="Find the perfect playlist for every mood!">
-  <meta name="keywords" content="music, mood, spotify, playlist">
+  <meta name="description" content="Βρείτε την τέλεια playlist για κάθε διάθεση!">
+  <meta name="keywords" content="μουσική, διάθεση, spotify, playlist">
   <meta name="author" content="Costas Chatzisalis">
   <meta name="robots" content="index,follow">
-
+  
   <!-- Social Media -->
   <meta property="og:title" content="SoundMood Pro v2">
-  <meta property="og:description" content="Find the perfect playlist for every mood!">
+  <meta property="og:description" content="Βρείτε την τέλεια playlist για κάθε διάθεση!">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://yourdomain.com/images/social-preview.jpg">
   <meta property="og:url" content="https://yourdomain.com">
   <meta name="twitter:card" content="summary_large_image">
-
+  
   <!-- Font Awesome (icons) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
+  
   <style>
     :root {
       --primary-color: #2A2F4F;
@@ -79,7 +79,7 @@
     .header span {
       font-weight: bold;
     }
-    /* Fixed Top Bar (contains Spotify Connect, mood buttons & search) */
+    /* Fixed Top Bar (Connect, Mood Buttons, Search) */
     .top-bar {
       position: fixed;
       top: 60px; /* κάτω από το header */
@@ -127,7 +127,7 @@
       margin: 0 auto;
       padding: 12px;
       flex-grow: 1;
-      margin-top: 200px; /* Αφήνουμε χώρο για fixed header + top-bar */
+      margin-top: 200px; /* χώρο για header + top-bar */
     }
     .mood-question {
       text-align: center;
@@ -259,6 +259,9 @@
       cursor: pointer;
     }
   </style>
+  
+  <!-- (Αν χρησιμοποιείς το Spotify SDK, μπορείς να το συμπεριλάβεις. Αν όχι, αφαιρέστε την παρακάτω γραμμή.) -->
+  <script src="https://sdk.scdn.co/spotify-player.js"></script>
 </head>
 <body>
   <div class="animated-bg"></div>
@@ -345,7 +348,7 @@
    
   <!-- General Scripts -->
   <script>
-    // ===================== SETTINGS =====================
+    // SETTINGS
     const isLocal = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
     const CLIENT_ID = '6f24397905834a03b7c0e82039d61ca1';
     const REDIRECT_URI = isLocal 
@@ -357,8 +360,8 @@
     let currentOffset = 0;
     const searchLimit = 10;
     let isLoading = false;
-    
-    // ===================== PKCE HELPERS =====================
+   
+    // PKCE Helpers
     function generateRandomString(length) {
       let text = '';
       const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
@@ -376,8 +379,8 @@
                 .replace(/\//g, '_')
                 .replace(/=+$/, '');
     }
-    
-    // ===================== AUTHENTICATION (LOGIN) =====================
+   
+    // Authentication (Login)
     async function initializeAuth() {
       if (!localStorage.getItem('spotifyToken')) {
         const codeVerifier = generateRandomString(128);
@@ -394,12 +397,10 @@
         window.location.href = authUrl.toString();
       }
     }
-    
-    // ===================== TOKEN REFRESH =====================
+   
+    // Token Refresh
     async function checkAndRefreshToken() {
       let token = localStorage.getItem('spotifyToken');
-      const refreshTokenStored = localStorage.getItem('refreshToken');
-      
       if (!token) {
         await initializeAuth();
         return null;
@@ -439,8 +440,8 @@
         return null;
       }
     }
-    
-    // ===================== DYNAMIC SEARCH (for tracks) =====================
+   
+    // Dynamic Search (for tracks) – Χωρίς autoplay ώστε να παίζει πλήρως όταν ο χρήστης πατήσει στον player
     async function fetchSearchResults(query, offset) {
       let token = localStorage.getItem('spotifyToken');
       if (!token) {
@@ -464,7 +465,6 @@
         const data = await response.json();
         const tracks = data.tracks?.items || [];
         const container = document.getElementById('playlistContainer');
-        // Χρησιμοποιούμε embed iframes για πλήρη αναπαραγωγή (χωρίς autoplay)
         container.innerHTML += tracks.map(track => `
           <div class="playlist-card">
             <iframe 
@@ -488,7 +488,6 @@
       }
       isLoading = false;
     }
-    
     async function handleCustomGenre() {
       const input = document.querySelector('.genre-input');
       const searchTerm = input.value.trim();
@@ -499,23 +498,23 @@
       container.innerHTML = '';
       await fetchSearchResults(currentSearchQuery, currentOffset);
     }
-    
-    // ===================== INFINITE SCROLL =====================
+   
+    // Infinite Scroll Listener
     let scrollTimeout;
     window.addEventListener('scroll', () => {
       if (scrollTimeout) return;
       scrollTimeout = setTimeout(() => {
         scrollTimeout = null;
         if (isLoading) return;
-        if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 200) {
+        if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 100) {
           if (currentSearchQuery !== '') {
             fetchSearchResults(currentSearchQuery, currentOffset);
           }
         }
       }, 200);
     });
-    
-    // ===================== STATIC MOOD BUTTONS (for playlists) =====================
+   
+    // Static Mood Buttons (for playlists)
     async function selectMood(moodType) {
       let token = await checkAndRefreshToken();
       if (!token) return;
@@ -545,9 +544,9 @@
                       allowtransparency="true">
               </iframe>
               <div class="social-share">
-                <i class="fab fa-facebook social-icon" onclick="sharePlaylist('facebook', '${playlist.id}')"></i>
-                <i class="fab fa-instagram social-icon" onclick="sharePlaylist('instagram', '${playlist.id}')"></i>
-                <i class="fab fa-twitter social-icon" onclick="sharePlaylist('twitter', '${playlist.id}')"></i>
+                <i class="fab fa-facebook social-icon" onclick="shareTo('facebook', '${playlist.id}')"></i>
+                <i class="fab fa-instagram social-icon" onclick="shareTo('instagram', '${playlist.id}')"></i>
+                <i class="fab fa-twitter social-icon" onclick="shareTo('twitter', '${playlist.id}')"></i>
               </div>
             </div>
           `;
@@ -557,10 +556,10 @@
         alert('Error loading playlist');
       }
     }
-    
-    // ===================== SHARING FUNCTIONS =====================
-    function sharePlaylist(platform, playlistId) {
-      const url = `https://open.spotify.com/playlist/${playlistId}`;
+   
+    // Sharing Functions
+    function shareTo(platform, contentId) {
+      const url = `https://open.spotify.com/playlist/${contentId}`;
       const shareUrls = {
         facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
         instagram: `https://www.instagram.com/?url=${encodeURIComponent(url)}`,
@@ -577,16 +576,23 @@
       };
       window.open(shareUrls[platform], '_blank');
     }
-    
-    // ===================== LANGUAGE FUNCTIONS =====================
+   
+    // Language Functions
     let currentLanguage = 'en';
     function updateLanguage() {
       document.querySelectorAll('[data-en], [data-el]').forEach(el => {
-        const text = el.getAttribute(`data-${currentLanguage}`);
-        if (el.tagName === 'INPUT') {
-          el.placeholder = text;
+        if (currentLanguage === 'en') {
+          if (el.tagName === 'INPUT') {
+            el.placeholder = el.getAttribute('data-en');
+          } else {
+            el.textContent = el.getAttribute('data-en');
+          }
         } else {
-          el.textContent = text;
+          if (el.tagName === 'INPUT') {
+            el.placeholder = el.getAttribute('data-el');
+          } else {
+            el.textContent = el.getAttribute('data-el');
+          }
         }
       });
       document.documentElement.lang = currentLanguage;
@@ -603,7 +609,7 @@
     });
   </script>
   
-  <!-- (Αποσπάσματα παλαιού Spotify SDK αν χρειάζεται, αλλιώς μπορείς να το αφαιρέσεις αν δεν το χρησιμοποιείς) -->
+  <!-- Spotify Web Playback SDK (αν χρειάζεται) -->
   <script src="https://sdk.scdn.co/spotify-player.js"></script>
   <script>
     window.onSpotifyWebPlaybackSDKReady = () => {
