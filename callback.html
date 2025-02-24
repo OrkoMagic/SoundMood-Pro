@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="el">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Spotify Callback</title>
@@ -14,7 +14,7 @@
       console.error('Authentication error:', error);
       window.location.href = '/';
     } else if (code) {
-      const codeVerifier = localStorage.getItem('code_verifier');
+      const codeVerifier = sessionStorage.getItem('code_verifier');
       fetch('/.netlify/functions/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

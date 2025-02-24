@@ -9,6 +9,7 @@ exports.handler = async (event, context) => {
   }
 
   const body = JSON.parse(event.body);
+
   const client_id = process.env.SPOTIFY_CLIENT_ID;
   const client_secret = process.env.SPOTIFY_CLIENT_SECRET;
 
@@ -26,7 +27,9 @@ exports.handler = async (event, context) => {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: params.toString()
       });
+
       const data = await response.json();
+
       if (response.ok) {
         return {
           statusCode: 200,
@@ -56,7 +59,9 @@ exports.handler = async (event, context) => {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: params.toString()
       });
+
       const data = await response.json();
+
       if (response.ok) {
         return {
           statusCode: 200,
