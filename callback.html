@@ -6,20 +6,15 @@
 </head>
 <body>
   <script>
-    // Λήψη των query parameters από το URL
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
     const error = params.get('error');
 
     if (error) {
-      console.error('Σφάλμα κατά την αυθεντικοποίηση:', error);
-      // Ανακατεύθυνση στο index σε περίπτωση σφάλματος
+      console.error('Authentication error:', error);
       window.location.href = '/';
     } else if (code) {
-      // Ανάκτηση του code_verifier που αποθηκεύτηκε στο sessionStorage
       const codeVerifier = sessionStorage.getItem('code_verifier');
-
-      // Κάνουμε POST αίτηση στο serverless endpoint για ανταλλαγή του κωδικού
       fetch('/.netlify/functions/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -31,18 +26,15 @@
       })
       .then(response => response.json())
       .then(data => {
-        // Αποθήκευση των tokens στο localStorage
         localStorage.setItem('spotifyToken', data.access_token);
         localStorage.setItem('refreshToken', data.refresh_token);
-        // Ανακατεύθυνση στην κύρια σελίδα
         window.location.href = '/';
       })
       .catch(err => {
-        console.error('Σφάλμα στην ανταλλαγή του κωδικού:', err);
+        console.error('Error exchanging code:', err);
         window.location.href = '/';
       });
     } else {
-      // Αν δεν υπάρχει ούτε code, ανακατευθύνετε στο index
       window.location.href = '/';
     }
   </script>
