@@ -49,6 +49,7 @@ exports.handler = async (event, context) => {
     params.append('grant_type', 'refresh_token');
     params.append('refresh_token', body.refresh_token);
     params.append('client_id', client_id);
+    params.append('client_secret', client_secret); // Προσθήκη client_secret
 
     try {
       const response = await fetch('https://accounts.spotify.com/api/token', {
@@ -77,7 +78,7 @@ exports.handler = async (event, context) => {
   } else {
     return {
       statusCode: 400,
-      body: JSON.stringify({ error: "Invalid request body" })
+      body: JSON.stringify({ error: "Invalid request" })
     };
   }
 };

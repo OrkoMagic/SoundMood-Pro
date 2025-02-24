@@ -73,7 +73,7 @@
       height: auto;
       filter: drop-shadow(0 0 5px rgba(255,215,0,0.5));
     }
-    /* Language Toggle Button – δείχνει το target γλώσσας */
+    /* Το κουμπί αλλαγής γλώσσας – θα δείχνει το target (αν είμαστε στα Αγγλικά, γράφει "Ελληνικά", αλλιώς "English") */
     .language-toggle {
       position: fixed;
       top: 18px;
@@ -187,7 +187,7 @@
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    /* Για αποφυγή διπλού click – ο container του iframe αποτρέπει την μετάδοση του click */
+    /* Για αποτροπή διπλού click στο iframe (απομονώνοντας το click) */
     .iframe-container {
       pointer-events: none;
     }
@@ -242,7 +242,7 @@
       border: none;
       cursor: pointer;
     }
-    /* Στυλ για το Play Full Track button (εμφανίζεται μόνο αν ο χρήστης είναι συνδεδεμένος) */
+    /* Το Play Full Track button (δεν εμφανίζεται αν δεν υπάρχει σύνδεση) */
     .play-btn {
       margin-top: 5px;
       padding: 5px 10px;
@@ -265,8 +265,8 @@
     <img src="./images/logo.png" alt="SoundMood Pro" />
   </div>
 
-  <!-- Το κουμπί γλώσσας τώρα δείχνει το target: αν είμαστε στα αγγλικά, γράφει "Ελληνικά", αλλιώς "English" -->
-  <div class="language-toggle" onclick="toggleLanguage()" data-en="EN/GR" data-el="EN/GR">Ελληνικά</div>
+  <!-- Το κουμπί γλώσσας δείχνει τώρα το target: αν είμαστε στα "en", εμφανίζει "Ελληνικά", αλλιώς "English" -->
+  <div class="language-toggle" onclick="toggleLanguage()" data-en="Ελληνικά" data-el="English">Ελληνικά</div>
 
   <div class="container">
     <div class="header">
@@ -279,50 +279,50 @@
       Connect with Spotify
     </button>
 
-    <div class="mood-question" data-en="What's your mood?" data-el="Πώς είσαι?">What's your mood?</div>
+    <div class="mood-question" data-en="What's your mood?" data-el="Ποια είναι η διάθεσή σου;">What's your mood?</div>
 
-    <!-- Mood Buttons -->
+    <!-- Mood Buttons with corrected translations -->
     <div class="mood-grid">
-      <button class="mood-btn" onclick="selectMood('love')" data-en="Love" data-el="Love">
+      <button class="mood-btn" onclick="selectMood('love')" data-en="Love" data-el="Αγάπη">
         <span>Love</span>
       </button>
-      <button class="mood-btn" onclick="selectMood('happy')" data-en="Happy" data-el="Happy">
+      <button class="mood-btn" onclick="selectMood('happy')" data-en="Happy" data-el="Ευτυχισμένος">
         <span>Happy</span>
       </button>
-      <button class="mood-btn" onclick="selectMood('sad')" data-en="Sad" data-el="Sad">
+      <button class="mood-btn" onclick="selectMood('sad')" data-en="Sad" data-el="Θλιμμένος">
         <span>Sad</span>
       </button>
-      <button class="mood-btn" onclick="selectMood('chill')" data-en="Chill" data-el="Chill">
+      <button class="mood-btn" onclick="selectMood('chill')" data-en="Chill" data-el="Χαλαρός">
         <span>Chill</span>
       </button>
-      <button class="mood-btn" onclick="selectMood('party')" data-en="Party" data-el="Party">
+      <button class="mood-btn" onclick="selectMood('party')" data-en="Party" data-el="Πάρτυ">
         <span>Party</span>
       </button>
-      <button class="mood-btn" onclick="selectMood('rainy')" data-en="Rainy Days" data-el="Rainy Days">
+      <button class="mood-btn" onclick="selectMood('rainy')" data-en="Rainy Days" data-el="Βροχερές μέρες">
         <span>Rainy Days</span>
       </button>
-      <button class="mood-btn" onclick="selectMood('workout')" data-en="Workout" data-el="Workout">
+      <button class="mood-btn" onclick="selectMood('workout')" data-en="Workout" data-el="Άσκηση">
         <span>Workout</span>
       </button>
-      <button class="mood-btn" onclick="selectMood('nostalgic')" data-en="Nostalgic" data-el="Nostalgic">
+      <button class="mood-btn" onclick="selectMood('nostalgic')" data-en="Nostalgic" data-el="Νοσταλγικός">
         <span>Nostalgic</span>
       </button>
-      <button class="mood-btn" onclick="selectMood('zen')" data-en="Zen" data-el="Zen">
+      <button class="mood-btn" onclick="selectMood('zen')" data-en="Zen" data-el="Ζεν">
         <span>Zen</span>
       </button>
-      <button class="mood-btn" onclick="selectMood('breakup')" data-en="Break Up" data-el="Break Up">
+      <button class="mood-btn" onclick="selectMood('breakup')" data-en="Break Up" data-el="Χώρισμα">
         <span>Break Up</span>
       </button>
     </div>
    
-    <!-- Custom Genre/Artist Search -->
+    <!-- Custom Genre/Artist Search with corrected text -->
     <div class="input-area">
       <div class="input-box">
         <input type="text" class="genre-input" 
                placeholder="Select music genre or your favorite artist!"
-               data-en="Select music genre or your favorite artist!"
-               data-el="Επίλεξε είδος ή αγαπημένο καλλιτέχνη!" />
-        <button class="send-btn" onclick="handleCustomGenre()" 
+               data-en="Select music genre or your favorite artist!" 
+               data-el="Επίλεξε είδος μουσικής ή αγαπημένο καλλιτέχνη!" />
+        <button class="send-btn" onclick="handleCustomGenre()"
                 data-en="Search" data-el="Αναζήτηση">Search</button>
       </div>
     </div>
@@ -340,13 +340,14 @@
    
     <div class="disclaimer">
       <span data-en="This app uses Spotify in accordance with" data-el="Η εφαρμογή χρησιμοποιεί το Spotify σύμφωνα με"></span>
-      <a href="https://www.spotify.com/legal/end-user-agreement/" target="_blank" data-en="Spotify's Terms of Service" data-el="Όρους Χρήσης του Spotify">Spotify's Terms of Service</a>
+      <a href="https://www.spotify.com/legal/end-user-agreement/" target="_blank" 
+         data-en="Spotify's Terms of Service" data-el="Όρους Χρήσης του Spotify">Spotify's Terms of Service</a>
     </div>
   </div>
    
   <!-- General Scripts -->
   <script>
-    /* ---------------- SETTINGS & PKCE HELPERS ---------------- */
+    /* ------------- SETTINGS & PKCE HELPERS ------------- */
     const isLocal = window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1';
     const SPOTIFY_CLIENT_ID = '6f24397905834a03b7c0e82039d61ca1';
     const SPOTIFY_REDIRECT_URI = isLocal 
@@ -371,12 +372,11 @@
         .replace(/=+$/, '');
     }
     
-    /* ---------------- AUTHENTICATION ---------------- */
+    /* ------------- AUTHENTICATION ------------- */
     async function initializeAuth() {
       const codeVerifier = generateRandomString(128);
       const codeChallenge = await generateCodeChallenge(codeVerifier);
       sessionStorage.setItem('code_verifier', codeVerifier);
-
       const authUrl = new URL('https://accounts.spotify.com/authorize');
       authUrl.searchParams.append('client_id', SPOTIFY_CLIENT_ID);
       authUrl.searchParams.append('response_type', 'code');
@@ -384,7 +384,6 @@
       authUrl.searchParams.append('scope', 'streaming user-read-email user-read-private user-read-playback-state user-modify-playback-state');
       authUrl.searchParams.append('code_challenge_method', 'S256');
       authUrl.searchParams.append('code_challenge', codeChallenge);
-
       window.location.href = authUrl.toString();
     }
     async function checkAndRefreshToken() {
@@ -429,7 +428,7 @@
       }
     }
     
-    /* ---------------- DYNAMIC SEARCH & PLAYBACK ---------------- */
+    /* ------------- DYNAMIC SEARCH & PLAYBACK ------------- */
     async function fetchSearchResults(query, offset) {
       let token = localStorage.getItem('spotifyToken');
       if (!token) {
@@ -528,13 +527,13 @@
             </div>
           `;
         }).join('');
-      } catch(error) {
+      } catch (error) {
         console.error('Error fetching playlists:', error);
         alert('Error loading playlist');
       }
     }
     
-    /* ---------------- SHARING FUNCTIONS ---------------- */
+    /* ------------- SHARING FUNCTIONS ------------- */
     function sharePlaylist(platform, playlistId) {
       const url = `https://open.spotify.com/playlist/${playlistId}`;
       const shareUrls = {
@@ -554,7 +553,7 @@
       window.open(shareUrls[platform], '_blank');
     }
     
-    /* ---------------- PLAY FULL TRACK FUNCTION ---------------- */
+    /* ------------- PLAY FULL TRACK FUNCTION ------------- */
     async function playFullTrack(trackId) {
       let token = localStorage.getItem('spotifyToken');
       if (!token) { 
@@ -576,31 +575,30 @@
       }
     }
     
-    /* ---------------- PREVENT IFRAME CLICK PROPAGATION ---------------- */
+    /* ------------- PREVENT IFRAME CLICK ------------- */
     function preventIframeClick(event) {
       event.preventDefault();
       event.stopPropagation();
     }
     
-    /* ---------------- LANGUAGE FUNCTIONS ---------------- */
+    /* ------------- LANGUAGE FUNCTIONS ------------- */
     let currentLanguage = 'en';
     function updateLanguage() {
       document.querySelectorAll('[data-en], [data-el]').forEach(el => {
         if (el.tagName === 'INPUT') {
-          el.placeholder = el.getAttribute(`data-${currentLanguage}`) || '';
+          el.placeholder = currentLanguage === 'en' ? el.getAttribute('data-en') : el.getAttribute('data-el');
         } else {
-          el.textContent = el.getAttribute(`data-${currentLanguage}`) || '';
+          el.innerHTML = currentLanguage === 'en' ? el.getAttribute('data-en') : el.getAttribute('data-el');
         }
       });
       document.documentElement.lang = currentLanguage;
-      // Το κουμπί γλώσσας δείχνει το target: αν είμαστε στα "en", δείχνει "Ελληνικά"
       const langToggle = document.querySelector('.language-toggle');
       if (langToggle) {
         langToggle.textContent = currentLanguage === 'en' ? 'Ελληνικά' : 'English';
       }
     }
     function toggleLanguage() {
-      currentLanguage = (currentLanguage === 'en') ? 'el' : 'en';
+      currentLanguage = currentLanguage === 'en' ? 'el' : 'en';
       localStorage.setItem('language', currentLanguage);
       updateLanguage();
     }
@@ -610,7 +608,7 @@
       updateLanguage();
     });
     
-    /* ---------------- INFINITE SCROLL & REFRESH PROMPT ---------------- */
+    /* ------------- INFINITE SCROLL & REFRESH PROMPT ------------- */
     function showRefreshMessage() {
       refreshPromptShown = true;
       const container = document.getElementById('playlistContainer');
