@@ -1,27 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="el">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SoundMood Pro v2</title>
   
   <!-- SEO -->
-  <meta name="description" content="Find the perfect playlist for every mood!">
-  <meta name="keywords" content="music, mood, spotify, playlist">
+  <meta name="description" content="Βρείτε την τέλεια playlist για κάθε διάθεση!">
+  <meta name="keywords" content="μουσική, διάθεση, spotify, playlist">
   <meta name="author" content="Costas Chatzisalis">
   <meta name="robots" content="index,follow">
-
+  
   <!-- Social Media -->
   <meta property="og:title" content="SoundMood Pro v2">
-  <meta property="og:description" content="Find the perfect playlist for every mood!">
+  <meta property="og:description" content="Βρείτε την τέλεια playlist για κάθε διάθεση!">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://yourdomain.com/images/social-preview.jpg">
   <meta property="og:url" content="https://yourdomain.com">
   <meta name="twitter:card" content="summary_large_image">
-
+  
   <!-- Font Awesome (icons) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
+  
   <style>
     :root {
       --primary-color: #2A2F4F;
@@ -62,14 +62,49 @@
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
+    /* Fixed Header */
+    .header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      padding: 0.8rem;
+      border-radius: 0 0 12px 12px;
+      text-align: center;
+      font-size: 0.95em;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      overflow: hidden;
+    }
+    .header span {
+      font-weight: bold;
+    }
+    /* Fixed Top Bar (Connect, Mood Buttons, Search) */
+    .top-bar {
+      position: fixed;
+      top: 60px; /* κάτω από το header */
+      left: 0;
+      width: 100%;
+      z-index: 1000;
+      background: var(--background-dark);
+      padding: 10px 0;
+    }
+    .top-bar .inner {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
     .logo {
       position: fixed;
       top: 12px;
       left: 12px;
-      z-index: 1000;
+      z-index: 1100;
     }
     .logo img {
-      width: 200px;
+      width: 150px;
       height: auto;
       filter: drop-shadow(0 0 5px rgba(255,215,0,0.5));
     }
@@ -77,7 +112,7 @@
       position: fixed;
       top: 18px;
       right: 12px;
-      z-index: 1000;
+      z-index: 1100;
       background: rgba(255,255,255,0.1);
       padding: 3px 8px;
       border-radius: 12px;
@@ -92,23 +127,11 @@
       margin: 0 auto;
       padding: 12px;
       flex-grow: 1;
-      margin-top: 80px;
-    }
-    .header {
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      padding: 0.8rem;
-      border-radius: 12px;
-      margin: 50px 0 15px;
-      text-align: center;
-      font-size: 0.95em;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      overflow: hidden;
+      margin-top: 200px; /* χώρο για header + top-bar */
     }
     .mood-question {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       font-size: 1.1em;
       color: var(--accent-color);
     }
@@ -116,9 +139,7 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 8px;
-      margin-bottom: 15px;
     }
-    /* Διατηρούμε τις 2 στήλες σε όλες τις οθόνες */
     .mood-btn {
       background: rgba(255,255,255,0.1);
       border: none;
@@ -190,7 +211,7 @@
     .social-share {
       display: flex;
       gap: 15px;
-      margin-top: 15px;
+      margin-top: 10px;
       justify-content: center;
     }
     .social-icon {
@@ -205,7 +226,7 @@
     .footer-note {
       font-size: 0.7em;
       line-height: 1.4;
-      margin-top: 10px;
+      margin-top: 20px;
       text-align: center;
       padding: 20px;
       color: #888;
@@ -221,13 +242,10 @@
     /* Responsive adjustments for mobile */
     @media (max-width: 600px) {
       .logo img {
-        width: 150px;
+        width: 120px;
       }
-      /* Κρατάμε τις 2 στήλες για τα mood buttons */
       .mood-grid {
         grid-template-columns: repeat(2, 1fr);
-        max-width: 100%;
-        margin: 0 auto;
       }
     }
     .loginBtn {
@@ -245,68 +263,66 @@
 <body>
   <div class="animated-bg"></div>
   
+  <!-- Fixed Logo and Language Toggle -->
   <div class="logo">
     <img src="./images/logo.png" alt="SoundMood Pro">
   </div>
-
-  <div class="language-toggle" onclick="toggleLanguage()" data-en="EN/GR" data-el="EN/GR">EN/GR</div>
-
+  <div class="language-toggle" onclick="toggleLanguage()" data-en="EN/GR" data-el="ΕΛ/GR">EN/GR</div>
+  
+  <!-- Fixed Header -->
+  <div class="header">
+    <span data-en="SoundMood Pro" data-el="SoundMood Pro">SoundMood Pro</span>
+  </div>
+  
+  <!-- Fixed Top Bar -->
+  <div class="top-bar">
+    <div class="inner">
+      <button class="loginBtn" onclick="initializeAuth()" data-en="Connect with Spotify" data-el="Connect with Spotify">
+        Connect with Spotify
+      </button>
+      <div class="mood-question" data-en="What's your mood?" data-el="Ποιά είναι η διάθεσή σου?"></div>
+      <div class="mood-grid">
+        <button class="mood-btn" onclick="selectMood('love')" data-en="Love" data-el="Love">
+          <i class="fas fa-heart"></i><span>Love</span>
+        </button>
+        <button class="mood-btn" onclick="selectMood('happy')" data-en="Happy" data-el="Happy">
+          <i class="fas fa-laugh-beam"></i><span>Happy</span>
+        </button>
+        <button class="mood-btn" onclick="selectMood('sad')" data-en="Sad" data-el="Sad">
+          <i class="fas fa-sad-tear"></i><span>Sad</span>
+        </button>
+        <button class="mood-btn" onclick="selectMood('chill')" data-en="Chill" data-el="Chill">
+          <i class="fas fa-moon"></i><span>Chill</span>
+        </button>
+        <button class="mood-btn" onclick="selectMood('party')" data-en="Party" data-el="Party">
+          <i class="fas fa-glass-cheers"></i><span>Party</span>
+        </button>
+        <button class="mood-btn" onclick="selectMood('rainy')" data-en="Rainy Days" data-el="Rainy Days">
+          <i class="fas fa-cloud-rain"></i><span>Rainy Days</span>
+        </button>
+        <button class="mood-btn" onclick="selectMood('workout')" data-en="Workout" data-el="Workout">
+          <i class="fas fa-dumbbell"></i><span>Workout</span>
+        </button>
+        <button class="mood-btn" onclick="selectMood('nostalgic')" data-en="Nostalgic" data-el="Nostalgic">
+          <i class="fas fa-history"></i><span>Nostalgic</span>
+        </button>
+        <button class="mood-btn" onclick="selectMood('zen')" data-en="Zen" data-el="Zen">
+          <i class="fas fa-spa"></i><span>Zen</span>
+        </button>
+        <button class="mood-btn" onclick="selectMood('breakup')" data-en="Break Up" data-el="Break Up">
+          <i class="fas fa-heart-broken"></i><span>Break Up</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Main Container -->
   <div class="container">
-    <div class="header">
-      <span data-en="SoundMood Pro" data-el="SoundMood Pro">SoundMood Pro</span>
-    </div>
-    
-    <!-- Spotify Connect Button -->
-    <button class="loginBtn" onclick="initializeAuth()"
-            data-en="Connect with Spotify" data-el="Connect with Spotify">
-      Connect with Spotify
-    </button>
-
-    <div class="mood-question" data-en="What's your mood?" data-el="What's your mood?"></div>
-
-    <!-- Mood Buttons -->
-    <div class="mood-grid">
-      <button class="mood-btn" onclick="selectMood('love')" data-en="Love" data-el="Love">
-        <span>Love</span>
-      </button>
-      <button class="mood-btn" onclick="selectMood('happy')" data-en="Happy" data-el="Happy">
-        <span>Happy</span>
-      </button>
-      <button class="mood-btn" onclick="selectMood('sad')" data-en="Sad" data-el="Sad">
-        <span>Sad</span>
-      </button>
-      <button class="mood-btn" onclick="selectMood('chill')" data-en="Chill" data-el="Chill">
-        <span>Chill</span>
-      </button>
-      <button class="mood-btn" onclick="selectMood('party')" data-en="Party" data-el="Party">
-        <span>Party</span>
-      </button>
-      <button class="mood-btn" onclick="selectMood('rainy')" data-en="Rainy Days" data-el="Rainy Days">
-        <span>Rainy Days</span>
-      </button>
-      <button class="mood-btn" onclick="selectMood('workout')" data-en="Workout" data-el="Workout">
-        <span>Workout</span>
-      </button>
-      <button class="mood-btn" onclick="selectMood('nostalgic')" data-en="Nostalgic" data-el="Nostalgic">
-        <span>Nostalgic</span>
-      </button>
-      <button class="mood-btn" onclick="selectMood('zen')" data-en="Zen" data-el="Zen">
-        <span>Zen</span>
-      </button>
-      <button class="mood-btn" onclick="selectMood('breakup')" data-en="Break Up" data-el="Break Up">
-        <span>Break Up</span>
-      </button>
-    </div>
-   
     <!-- Custom Genre/Artist Search -->
     <div class="input-area">
       <div class="input-box">
-        <input type="text" class="genre-input" 
-               placeholder="Select music genre or your favorite artist!"
-               data-en="Select music genre or your favorite artist!"
-               data-el="Select music genre or your favorite artist!">
-        <button class="send-btn" onclick="handleCustomGenre()" 
-                data-en="Search" data-el="Search">Search</button>
+        <input type="text" class="genre-input" placeholder="Select music genre or your favorite artist!" data-en="Select music genre or your favorite artist!" data-el="Επιλέξτε είδος μουσικής ή αγαπημένο καλλιτέχνη!">
+        <button class="send-btn" onclick="handleCustomGenre()" data-en="Search" data-el="Search">Search</button>
       </div>
     </div>
    
@@ -329,7 +345,7 @@
    
   <!-- General Scripts -->
   <script>
-    // ===================== SETTINGS =====================
+    // SETTINGS
     const isLocal = window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1';
     const SPOTIFY_CLIENT_ID = '6f24397905834a03b7c0e82039d61ca1';
     const SPOTIFY_REDIRECT_URI = isLocal 
@@ -341,8 +357,8 @@
     let currentOffset = 0;
     const searchLimit = 10;
     let isLoading = false;
-    
-    // ===================== PKCE HELPERS =====================
+   
+    // PKCE Helpers
     function generateRandomString(length) {
       let text = '';
       const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
@@ -351,49 +367,43 @@
       }
       return text;
     }
-
     async function generateCodeChallenge(codeVerifier) {
       const encoder = new TextEncoder();
       const data = encoder.encode(codeVerifier);
       const digest = await window.crypto.subtle.digest('SHA-256', data);
       return btoa(String.fromCharCode(...new Uint8Array(digest)))
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '');
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=+$/, '');
     }
-    
-    // ===================== AUTHENTICATION (LOGIN) =====================
+   
+    // AUTHENTICATION (LOGIN)
     async function initializeAuth() {
       const codeVerifier = generateRandomString(128);
       const codeChallenge = await generateCodeChallenge(codeVerifier);
       sessionStorage.setItem('code_verifier', codeVerifier);
-
+      const scopes = 'streaming user-read-email user-read-private user-read-playback-state user-modify-playback-state';
       const authUrl = new URL('https://accounts.spotify.com/authorize');
       authUrl.searchParams.append('client_id', SPOTIFY_CLIENT_ID);
       authUrl.searchParams.append('response_type', 'code');
       authUrl.searchParams.append('redirect_uri', SPOTIFY_REDIRECT_URI);
-      authUrl.searchParams.append('scope', 'streaming user-read-email user-read-private user-read-playback-state user-modify-playback-state');
+      authUrl.searchParams.append('scope', scopes);
       authUrl.searchParams.append('code_challenge_method', 'S256');
       authUrl.searchParams.append('code_challenge', codeChallenge);
-
       window.location.href = authUrl.toString();
     }
-    
-    // ===================== TOKEN REFRESH =====================
+   
+    // TOKEN REFRESH
     async function checkAndRefreshToken() {
       let token = localStorage.getItem('spotifyToken');
-      const refreshTokenStored = localStorage.getItem('refreshToken');
-      
       if (!token) {
         await initializeAuth();
         return null;
       }
-
       try {
         const response = await fetch('https://api.spotify.com/v1/me', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        
         if (response.status === 401) throw new Error('Token expired');
         return token;
       } catch (error) {
@@ -402,23 +412,19 @@
         return token;
       }
     }
-
     async function refreshToken() {
       const refreshTokenStored = localStorage.getItem('refreshToken');
       if (!refreshTokenStored) {
         await initializeAuth();
         return null;
       }
-
       try {
         const response = await fetch('/.netlify/functions/auth', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ refresh_token: refreshTokenStored })
         });
-        
         if (!response.ok) throw new Error('Refresh failed');
-        
         const data = await response.json();
         localStorage.setItem('spotifyToken', data.access_token);
         return data.access_token;
@@ -429,8 +435,8 @@
         return null;
       }
     }
-    
-    // ===================== DYNAMIC SEARCH (for tracks) =====================
+   
+    // DYNAMIC SEARCH (for tracks) – embed players for full track playback (if available)
     async function fetchSearchResults(query, offset) {
       let token = localStorage.getItem('spotifyToken');
       if (!token) {
@@ -454,7 +460,6 @@
         const data = await response.json();
         const tracks = data.tracks?.items || [];
         const container = document.getElementById('playlistContainer');
-        
         container.innerHTML += tracks.map(track => `
           <div class="playlist-card">
             <iframe 
@@ -472,14 +477,12 @@
             </div>
           </div>
         `).join('');
-        
         currentOffset += searchLimit;
       } catch (error) {
         console.error('Error fetching search results:', error);
       }
       isLoading = false;
     }
-    
     async function handleCustomGenre() {
       const input = document.querySelector('.genre-input');
       const searchTerm = input.value.trim();
@@ -490,21 +493,35 @@
       container.innerHTML = '';
       await fetchSearchResults(currentSearchQuery, currentOffset);
     }
-    
-    // ===================== STATIC MOOD BUTTONS (for playlists) =====================
+   
+    // Infinite Scroll Listener (throttled)
+    let scrollTimeout;
+    window.addEventListener('scroll', () => {
+      if (scrollTimeout) return;
+      scrollTimeout = setTimeout(() => {
+        scrollTimeout = null;
+        if (isLoading) return;
+        if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 100) {
+          if (currentSearchQuery !== '') {
+            fetchSearchResults(currentSearchQuery, currentOffset);
+          }
+        }
+      }, 200);
+    });
+   
+    // STATIC MOOD BUTTONS (for playlists)
     async function selectMood(moodType) {
-      const token = await checkAndRefreshToken();
+      let token = await checkAndRefreshToken();
       if (!token) return;
-
       try {
-        const response = await fetch(`https://api.spotify.com/v1/search?q=${moodType}+mood&type=playlist&limit=10`, {
+        let response = await fetch(`https://api.spotify.com/v1/search?q=${moodType}+mood&type=playlist&limit=10`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (response.status === 401) {
-          const newToken = await refreshToken();
-          if (!newToken) return;
+          token = await refreshToken();
+          if (!token) return;
           response = await fetch(`https://api.spotify.com/v1/search?q=${moodType}+mood&type=playlist&limit=10`, {
-            headers: { 'Authorization': `Bearer ${newToken}` }
+            headers: { 'Authorization': `Bearer ${token}` }
           });
         }
         const data = await response.json();
@@ -522,9 +539,9 @@
                       allowtransparency="true">
               </iframe>
               <div class="social-share">
-                <i class="fab fa-facebook social-icon" onclick="sharePlaylist('facebook', '${playlist.id}')"></i>
-                <i class="fab fa-instagram social-icon" onclick="sharePlaylist('instagram', '${playlist.id}')"></i>
-                <i class="fab fa-twitter social-icon" onclick="sharePlaylist('twitter', '${playlist.id}')"></i>
+                <i class="fab fa-facebook social-icon" onclick="shareTo('facebook', '${playlist.id}')"></i>
+                <i class="fab fa-instagram social-icon" onclick="shareTo('instagram', '${playlist.id}')"></i>
+                <i class="fab fa-twitter social-icon" onclick="shareTo('twitter', '${playlist.id}')"></i>
               </div>
             </div>
           `;
@@ -534,10 +551,10 @@
         alert('Error loading playlist');
       }
     }
-    
-    // ===================== SHARING FUNCTIONS =====================
-    function sharePlaylist(platform, playlistId) {
-      const url = `https://open.spotify.com/playlist/${playlistId}`;
+   
+    // SHARING FUNCTIONS
+    function shareTo(platform, contentId) {
+      const url = `https://open.spotify.com/playlist/${contentId}`;
       const shareUrls = {
         facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
         instagram: `https://www.instagram.com/?url=${encodeURIComponent(url)}`,
@@ -545,7 +562,6 @@
       };
       window.open(shareUrls[platform], '_blank');
     }
-
     function shareTrack(platform, trackId) {
       const url = `https://open.spotify.com/track/${trackId}`;
       const shareUrls = {
@@ -555,10 +571,9 @@
       };
       window.open(shareUrls[platform], '_blank');
     }
-    
-    // ===================== LANGUAGE FUNCTIONS =====================
+   
+    // LANGUAGE FUNCTIONS
     let currentLanguage = 'en';
-
     function updateLanguage() {
       document.querySelectorAll('[data-en], [data-el]').forEach(el => {
         const text = el.getAttribute(`data-${currentLanguage}`);
@@ -570,18 +585,41 @@
       });
       document.documentElement.lang = currentLanguage;
     }
-
     function toggleLanguage() {
-      // Force English for terms and overall app
-      currentLanguage = 'en';
+      currentLanguage = (currentLanguage === 'en') ? 'el' : 'en';
       localStorage.setItem('language', currentLanguage);
       updateLanguage();
     }
-
     document.addEventListener("DOMContentLoaded", () => {
-      localStorage.removeItem('language');
+      const savedLang = localStorage.getItem('language');
+      if (savedLang) currentLanguage = savedLang;
       updateLanguage();
     });
+  </script>
+  
+  <!-- Spotify Web Playback SDK -->
+  <script src="https://sdk.scdn.co/spotify-player.js"></script>
+  <script>
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      const token = localStorage.getItem('spotifyToken');
+      if (!token) return;
+      const player = new Spotify.Player({
+        name: 'SoundMood Pro Player',
+        getOAuthToken: cb => { cb(token); },
+        volume: 0.5
+      });
+      player.addListener('ready', ({ device_id }) => {
+        console.log('Device connected:', device_id);
+        window.spotifyDeviceId = device_id;
+      });
+      player.addListener('authentication_error', ({ message }) => {
+        console.error('Authentication error:', message);
+        localStorage.removeItem('spotifyToken');
+        localStorage.removeItem('refreshToken');
+        initializeAuth();
+      });
+      player.connect();
+    };
   </script>
 </body>
 </html>
