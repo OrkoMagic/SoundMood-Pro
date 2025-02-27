@@ -2,10 +2,7 @@ const fetch = require('node-fetch');
 
 exports.handler = async (event, context) => {
   if (event.httpMethod !== "POST") {
-    return {
-      statusCode: 405,
-      body: "Method Not Allowed"
-    };
+    return { statusCode: 405, body: "Method Not Allowed" };
   }
   const body = JSON.parse(event.body);
   const client_id = process.env.SPOTIFY_CLIENT_ID;
