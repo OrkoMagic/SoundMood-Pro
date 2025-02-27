@@ -63,22 +63,23 @@
 <body>
   <div class="animated-bg"></div>
   <div class="logo"><img src="./images/logo.png" alt="SoundMood Pro" /></div>
+  <!-- Το κουμπί γλώσσας δείχνει το target: αν είμαστε στα "en", εμφανίζει "Ελληνικά", αλλιώς "English" -->
   <div class="language-toggle" onclick="toggleLanguage()" data-en="Ελληνικά" data-el="English">Ελληνικά</div>
   <div class="container">
     <div class="header"><span data-en="SoundMood Pro" data-el="SoundMood Pro">SoundMood Pro</span></div>
     <button class="loginBtn" onclick="initializeAuth()" data-en="Connect with Spotify" data-el="Σύνδεση με Spotify">Connect with Spotify</button>
     <div class="mood-question" data-en="What's your mood?" data-el="Ποια είναι η διάθεσή σου?">What's your mood?</div>
     <div class="mood-grid">
-      <button class="mood-btn" onclick="selectMood('love')" data-en="Love" data-el="Αγάπη"><span data-en="Love" data-el="Αγάπη">Love</span></button>
-      <button class="mood-btn" onclick="selectMood('happy')" data-en="Happy" data-el="Ευτυχισμένος"><span data-en="Happy" data-el="Ευτυχισμένος">Happy</span></button>
-      <button class="mood-btn" onclick="selectMood('sad')" data-en="Sad" data-el="Θλιμμένος"><span data-en="Sad" data-el="Θλιμμένος">Sad</span></button>
-      <button class="mood-btn" onclick="selectMood('chill')" data-en="Chill" data-el="Χαλαρός"><span data-en="Chill" data-el="Χαλαρός">Chill</span></button>
-      <button class="mood-btn" onclick="selectMood('party')" data-en="Party" data-el="Πάρτυ"><span data-en="Party" data-el="Πάρτυ">Party</span></button>
-      <button class="mood-btn" onclick="selectMood('rainy')" data-en="Rainy Days" data-el="Βροχερές μέρες"><span data-en="Rainy Days" data-el="Βροχερές μέρες">Rainy Days</span></button>
-      <button class="mood-btn" onclick="selectMood('workout')" data-en="Workout" data-el="Άσκηση"><span data-en="Workout" data-el="Άσκηση">Workout</span></button>
-      <button class="mood-btn" onclick="selectMood('nostalgic')" data-en="Nostalgic" data-el="Νοσταλγικός"><span data-en="Nostalgic" data-el="Νοσταλγικός">Nostalgic</span></button>
-      <button class="mood-btn" onclick="selectMood('zen')" data-en="Zen" data-el="Ζεν"><span data-en="Zen" data-el="Ζεν">Zen</span></button>
-      <button class="mood-btn" onclick="selectMood('breakup')" data-en="Break Up" data-el="Χώρισμα"><span data-en="Break Up" data-el="Χώρισμα">Break Up</span></button>
+      <button class="mood-btn" onclick="selectMood('love')" data-en="Love" data-el="Αγάπη"><span>Love</span></button>
+      <button class="mood-btn" onclick="selectMood('happy')" data-en="Happy" data-el="Ευτυχισμένος"><span>Happy</span></button>
+      <button class="mood-btn" onclick="selectMood('sad')" data-en="Sad" data-el="Θλιμμένος"><span>Sad</span></button>
+      <button class="mood-btn" onclick="selectMood('chill')" data-en="Chill" data-el="Χαλαρός"><span>Chill</span></button>
+      <button class="mood-btn" onclick="selectMood('party')" data-en="Party" data-el="Πάρτυ"><span>Party</span></button>
+      <button class="mood-btn" onclick="selectMood('rainy')" data-en="Rainy Days" data-el="Βροχερές μέρες"><span>Rainy Days</span></button>
+      <button class="mood-btn" onclick="selectMood('workout')" data-en="Workout" data-el="Άσκηση"><span>Workout</span></button>
+      <button class="mood-btn" onclick="selectMood('nostalgic')" data-en="Nostalgic" data-el="Νοσταλγικός"><span>Nostalgic</span></button>
+      <button class="mood-btn" onclick="selectMood('zen')" data-en="Zen" data-el="Ζεν"><span>Zen</span></button>
+      <button class="mood-btn" onclick="selectMood('breakup')" data-en="Break Up" data-el="Χώρισμα"><span>Break Up</span></button>
     </div>
     <div class="input-area">
       <div class="input-box">
@@ -186,70 +187,52 @@
     }
     
     /* ------------- Dynamic Search & Playback ------------- */
-    async function fetchRecommendations(genre, token) {
-      // Χρησιμοποιούμε το Recommendations API για αναζήτηση βάσει genre (μόνο για μία λέξη)
-      const response = await fetch(`https://api.spotify.com/v1/recommendations?seed_genres=${encodeURIComponent(genre)}&limit=${searchLimit}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await response.json();
-      return data.tracks || [];
-    }
     async function fetchSearchResults(query, offset) {
       let token = localStorage.getItem('spotifyToken');
-      if (!token) {
-        await initializeAuth();
-        return;
-      }
+      if (!token) { await initializeAuth(); return; }
       isLoading = true;
-      // Αν το query έχει κενά, θεωρούμε ότι πρόκειται για αναζήτηση καλλιτέχνη και το μετατρέπουμε σε "artist:"
-      if(query.indexOf(" ") !== -1){
-        query = "artist:" + query;
-      }
-      let tracks = [];
-      // Αν το query είναι μία λέξη, θεωρούμε ότι είναι genre και χρησιμοποιούμε το recommendations API
-      if(query.indexOf("artist:") === -1){
-        tracks = await fetchRecommendations(query, token);
-      } else {
+      try {
         const response = await fetch(
           `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=${searchLimit}&offset=${offset}`,
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
-        if(response.status === 401){
+        if(response.status === 401) {
           token = await refreshToken();
-          if(!token)return;
+          if (!token) return;
           const response2 = await fetch(
             `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=${searchLimit}&offset=${offset}`,
             { headers: { 'Authorization': `Bearer ${token}` } }
           );
-          const data2 = await response2.json();
-          tracks = data2.tracks.items || [];
+          var data = await response2.json();
         } else {
-          const data = await response.json();
-          tracks = data.tracks.items || [];
+          var data = await response.json();
         }
+        const tracks = data.tracks.items || [];
+        const container = document.getElementById('playlistContainer');
+        container.innerHTML += tracks.map(track => `
+          <div class="playlist-card">
+            <div class="iframe-container" onclick="preventIframeClick(event)">
+              <iframe 
+                src="https://open.spotify.com/embed/track/${track.id}"
+                width="100%"
+                height="80"
+                frameborder="0"
+                allowtransparency="true"
+                allow="encrypted-media">
+              </iframe>
+            </div>
+            <button class="play-btn" onclick="playFullTrack('${track.id}')" data-en="Play Full Track" data-el="Αναπαραγωγή πλήρως">Play Full Track</button>
+            <div class="social-share">
+              <i class="fab fa-facebook social-icon" onclick="shareTrack('facebook', '${track.id}')"></i>
+              <i class="fab fa-instagram social-icon" onclick="shareTrack('instagram', '${track.id}')"></i>
+              <i class="fab fa-twitter social-icon" onclick="shareTrack('twitter', '${track.id}')"></i>
+            </div>
+          </div>
+        `).join('');
+        currentOffset += searchLimit;
+      } catch (error) {
+        console.error('Error fetching search results:', error);
       }
-      const container = document.getElementById('playlistContainer');
-      container.innerHTML += tracks.map(track => `
-        <div class="playlist-card">
-          <div class="iframe-container" onclick="preventIframeClick(event)">
-            <iframe 
-              src="https://open.spotify.com/embed/track/${track.id}"
-              width="100%"
-              height="80"
-              frameborder="0"
-              allowtransparency="true"
-              allow="encrypted-media">
-            </iframe>
-          </div>
-          <button class="play-btn" onclick="playFullTrack('${track.id}')" data-en="Play Full Track" data-el="Αναπαραγωγή πλήρως">Play Full Track</button>
-          <div class="social-share">
-            <i class="fab fa-facebook social-icon" onclick="shareTrack('facebook', '${track.id}')"></i>
-            <i class="fab fa-instagram social-icon" onclick="shareTrack('instagram', '${track.id}')"></i>
-            <i class="fab fa-twitter social-icon" onclick="shareTrack('twitter', '${track.id}')"></i>
-          </div>
-        </div>
-      `).join('');
-      currentOffset += searchLimit;
       isLoading = false;
     }
     async function handleCustomGenre() {
@@ -272,11 +255,13 @@
         if (response.status === 401) {
           const newToken = await refreshToken();
           if (!newToken) return;
-          response = await fetch(`https://api.spotify.com/v1/search?q=${moodType}+mood&type=playlist&limit=10`, {
+          const response2 = await fetch(`https://api.spotify.com/v1/search?q=${moodType}+mood&type=playlist&limit=10`, {
             headers: { 'Authorization': `Bearer ${newToken}` }
           });
+          var data = await response2.json();
+        } else {
+          var data = await response.json();
         }
-        const data = await response.json();
         const playlists = data.playlists.items || [];
         const container = document.getElementById('playlistContainer');
         container.innerHTML = playlists.map(playlist => `
@@ -302,7 +287,7 @@
       }
     }
     
-    /* ------------- SHARING FUNCTIONS ------------- */
+    /* ------------- Sharing Functions ------------- */
     function sharePlaylist(platform, playlistId) {
       const url = `https://open.spotify.com/playlist/${playlistId}`;
       const shareUrls = {
@@ -322,7 +307,7 @@
       window.open(shareUrls[platform], '_blank');
     }
     
-    /* ------------- PLAY FULL TRACK ------------- */
+    /* ------------- Play Full Track Function ------------- */
     async function playFullTrack(trackId) {
       let token = localStorage.getItem('spotifyToken');
       if (!token) { 
@@ -343,13 +328,13 @@
       }
     }
     
-    /* ------------- PREVENT IFRAME CLICK ------------- */
+    /* ------------- Prevent Iframe Click ------------- */
     function preventIframeClick(event) {
       event.preventDefault();
       event.stopPropagation();
     }
     
-    /* ------------- LANGUAGE FUNCTIONS ------------- */
+    /* ------------- Language Functions ------------- */
     let currentLanguage = 'en';
     function updateLanguage() {
       document.querySelectorAll('[data-en], [data-el]').forEach(el => {
@@ -376,7 +361,7 @@
       updateLanguage();
     });
     
-    /* ------------- INFINITE SCROLL & REFRESH PROMPT ------------- */
+    /* ------------- Infinite Scroll & Refresh Prompt ------------- */
     function showRefreshMessage() {
       refreshPromptShown = true;
       const container = document.getElementById('playlistContainer');
