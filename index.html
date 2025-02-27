@@ -45,7 +45,8 @@
     .mood-btn:active { transform: scale(0.95); background: var(--secondary-color); }
     .input-area { margin: 15px 0; }
     .input-box { display: flex; gap: 8px; }
-    .genre-input { flex: 1; padding: 10px; border: none; border-radius: 8px; background: rgba(255,255,255,0.05); font-size: 0.9em; }
+    /* Διατήρηση λευκού χρώματος στο input */
+    .genre-input { flex: 1; padding: 10px; border: none; border-radius: 8px; background: rgba(255,255,255,0.05); color: white; font-size: 0.9em; }
     .send-btn { padding: 10px 16px; border: none; border-radius: 8px; background: var(--secondary-color); color: white; cursor: pointer; font-size: 0.9em; transition: transform 0.2s ease; }
     .playlist-card { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 12px; margin-bottom: 12px; animation: slideIn 0.3s ease; }
     @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -63,7 +64,6 @@
 <body>
   <div class="animated-bg"></div>
   <div class="logo"><img src="./images/logo.png" alt="SoundMood Pro" /></div>
-  <!-- Το κουμπί γλώσσας δείχνει το target: αν είμαστε στα "en", εμφανίζει "Ελληνικά", αλλιώς "English" -->
   <div class="language-toggle" onclick="toggleLanguage()" data-en="Ελληνικά" data-el="English">Ελληνικά</div>
   <div class="container">
     <div class="header"><span data-en="SoundMood Pro" data-el="SoundMood Pro">SoundMood Pro</span></div>
@@ -100,14 +100,14 @@
   </div>
   
   <script>
-    /* ------------- Global Variables ------------- */
+    /* ---------------- Global Variables ---------------- */
     const searchLimit = 10;
     let currentSearchQuery = '';
     let currentOffset = 0;
     let isLoading = false;
     let refreshPromptShown = false;
     
-    /* ------------- PKCE Helpers ------------- */
+    /* ---------------- PKCE Helpers ---------------- */
     const isLocal = window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1';
     const SPOTIFY_CLIENT_ID = '6f24397905834a03b7c0e82039d61ca1';
     const SPOTIFY_REDIRECT_URI = isLocal 
@@ -132,7 +132,7 @@
         .replace(/=+$/, '');
     }
     
-    /* ------------- Authentication ------------- */
+    /* ---------------- Authentication ---------------- */
     async function initializeAuth() {
       const codeVerifier = generateRandomString(128);
       const codeChallenge = await generateCodeChallenge(codeVerifier);
@@ -148,10 +148,7 @@
     }
     async function checkAndRefreshToken() {
       let token = localStorage.getItem('spotifyToken');
-      if (!token) {
-        await initializeAuth();
-        return null;
-      }
+      if (!token) { await initializeAuth(); return null; }
       try {
         const response = await fetch('https://api.spotify.com/v1/me', {
           headers: { 'Authorization': `Bearer ${token}` }
@@ -165,10 +162,7 @@
     }
     async function refreshToken() {
       const refreshTokenStored = localStorage.getItem('refreshToken');
-      if (!refreshTokenStored) {
-        await initializeAuth();
-        return null;
-      }
+      if (!refreshTokenStored) { await initializeAuth(); return null; }
       try {
         const response = await fetch('/.netlify/functions/auth', {
           method: 'POST',
@@ -186,28 +180,51 @@
       }
     }
     
-    /* ------------- Dynamic Search & Playback ------------- */
+    /* ---------------- Dynamic Search & Playback ---------------- */
     async function fetchSearchResults(query, offset) {
       let token = localStorage.getItem('spotifyToken');
       if (!token) { await initializeAuth(); return; }
       isLoading = true;
       try {
-        const response = await fetch(
-          `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=${searchLimit}&offset=${offset}`,
-          { headers: { 'Authorization': `Bearer ${token}` } }
-        );
-        if(response.status === 401) {
-          token = await refreshToken();
-          if (!token) return;
-          const response2 = await fetch(
-            `https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=${searchLimit}&offset=${offset}`,
+        // Ελέγχουμε αν το query έχει κενά (δηλαδή πιθανό artist) ή μία λέξη (genre)
+        let finalQuery = query;
+        let useRecommendations = false;
+        if(query.indexOf(" ") === -1){
+          // Μία λέξη: θεωρούμε ότι πρόκειται για genre → χρησιμοποιούμε Recommendations API
+          useRecommendations = true;
+        } else {
+          // Πολλαπλές λέξεις: προσθέτουμε "artist:" για στοχευμένη αναζήτηση
+          finalQuery = "artist:" + query;
+        }
+        let tracks = [];
+        if(useRecommendations){
+          // Προσθέτουμε τυχαίο παράμετρο για αλλαγή αποτελεσμάτων
+          const randomParam = "&random=" + Math.random();
+          const response = await fetch(
+            `https://api.spotify.com/v1/recommendations?seed_genres=${encodeURIComponent(query)}&limit=${searchLimit}${randomParam}`,
             { headers: { 'Authorization': `Bearer ${token}` } }
           );
-          var data = await response2.json();
+          const data = await response.json();
+          tracks = data.tracks || [];
         } else {
-          var data = await response.json();
+          const response = await fetch(
+            `https://api.spotify.com/v1/search?q=${encodeURIComponent(finalQuery)}&type=track&limit=${searchLimit}&offset=${offset}`,
+            { headers: { 'Authorization': `Bearer ${token}` } }
+          );
+          if(response.status === 401){
+            token = await refreshToken();
+            if(!token)return;
+            const response2 = await fetch(
+              `https://api.spotify.com/v1/search?q=${encodeURIComponent(finalQuery)}&type=track&limit=${searchLimit}&offset=${offset}`,
+              { headers: { 'Authorization': `Bearer ${token}` } }
+            );
+            const data2 = await response2.json();
+            tracks = data2.tracks.items || [];
+          } else {
+            const data = await response.json();
+            tracks = data.tracks.items || [];
+          }
         }
-        const tracks = data.tracks.items || [];
         const container = document.getElementById('playlistContainer');
         container.innerHTML += tracks.map(track => `
           <div class="playlist-card">
@@ -287,7 +304,7 @@
       }
     }
     
-    /* ------------- Sharing Functions ------------- */
+    /* ---------------- Sharing Functions ---------------- */
     function sharePlaylist(platform, playlistId) {
       const url = `https://open.spotify.com/playlist/${playlistId}`;
       const shareUrls = {
@@ -307,7 +324,7 @@
       window.open(shareUrls[platform], '_blank');
     }
     
-    /* ------------- Play Full Track Function ------------- */
+    /* ---------------- Play Full Track Function ---------------- */
     async function playFullTrack(trackId) {
       let token = localStorage.getItem('spotifyToken');
       if (!token) { 
@@ -328,13 +345,13 @@
       }
     }
     
-    /* ------------- Prevent Iframe Click ------------- */
+    /* ---------------- Prevent Iframe Click ---------------- */
     function preventIframeClick(event) {
       event.preventDefault();
       event.stopPropagation();
     }
     
-    /* ------------- Language Functions ------------- */
+    /* ---------------- Language Functions ---------------- */
     let currentLanguage = 'en';
     function updateLanguage() {
       document.querySelectorAll('[data-en], [data-el]').forEach(el => {
@@ -361,7 +378,7 @@
       updateLanguage();
     });
     
-    /* ------------- Infinite Scroll & Refresh Prompt ------------- */
+    /* ---------------- Infinite Scroll & Refresh Prompt ---------------- */
     function showRefreshMessage() {
       refreshPromptShown = true;
       const container = document.getElementById('playlistContainer');
