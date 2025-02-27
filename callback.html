@@ -9,7 +9,6 @@
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
     const error = params.get('error');
-
     if (error) {
       console.error('Authentication error:', error);
       window.location.href = '/';
