@@ -185,14 +185,11 @@
       if (!token) { await initializeAuth(); return; }
       isLoading = true;
       
-      // Ελέγχουμε το query: αν έχει μόνο μία λέξη, το θεωρούμε genre,
-      // αλλά μόνο αν ανήκει στα έγκυρα seed genres.
       let finalQuery = query;
       let useRecommendations = false;
-      const validSeedGenres = ["acoustic", "afrobeat", "alt-rock", "alternative", "ambient", "anime", "black-metal", "bluegrass", "blues", "bossanova", "brazil", "breakbeat", "british", "cantopop", "chicago-house", "children", "chill", "classical", "club", "comedy", "country", "dance", "dancehall", "death-metal", "deep-house", "detroit-techno", "disco", "drum-and-bass", "dub", "dubstep", "edm", "electro", "electronic", "emo", "folk", "french", "funk", "gospel", "goth", "grindcore", "bluegrass", "groove", "grunge", "happy", "hard-rock", "hardcore", "heavy-metal", "hip-hop", "holidays", "honky-tonk", "house", "idm", "indie", "indie-pop", "j-dance", "j-pop", "jazz", "k-pop", "latin", "pop", "post-dubstep", "punk", "r-n-b", "rainy-day", "reggae", "rock", "rock-n-roll", "romance", "sad", "salsa", "samba", "synth-pop", "tango", "techno", "trance", "trip-hop", "world-music"];
+      const validSeedGenres = ["acoustic","afrobeat","alt-rock","alternative","ambient","anime","black-metal","bluegrass","blues","bossanova","brazil","breakbeat","british","cantopop","chicago-house","children","chill","classical","club","comedy","country","dance","dancehall","death-metal","deep-house","detroit-techno","disco","drum-and-bass","dub","dubstep","edm","electro","electronic","emo","folk","french","funk","gospel","goth","grindcore","groove","grunge","happy","hard-rock","hardcore","heavy-metal","hip-hop","holidays","honky-tonk","house","idm","indie","indie-pop","j-dance","j-pop","jazz","k-pop","latin","pop","post-dubstep","punk","r-n-b","rainy-day","reggae","rock","rock-n-roll","romance","sad","salsa","samba","synth-pop","tango","techno","trance","trip-hop","world-music"];
       
       if(query.indexOf(" ") === -1){
-        // Μία λέξη: έλεγξε αν είναι έγκυρο seed genre
         if(validSeedGenres.includes(query.toLowerCase())){
           useRecommendations = true;
         } else {
@@ -202,17 +199,17 @@
       
       let tracks = [];
       if(useRecommendations){
-        // Αφαιρούμε την τυχαία παράμετρο (δεν υποστηρίζεται από το API)
         const response = await fetch(
           `https://api.spotify.com/v1/recommendations?seed_genres=${encodeURIComponent(query.toLowerCase())}&limit=${searchLimit}`,
           { headers: { 'Authorization': `Bearer ${token}` } }
         );
-        const data = await response.json();
-        if(data.error){
-          console.error("Recommendations API error:", data.error);
-          tracks = [];
-        } else {
+        // Ελέγχουμε το response πριν το διαβάσουμε ως JSON
+        if(response.ok){
+          const data = await response.json();
           tracks = data.tracks || [];
+        } else {
+          console.error("Recommendations API error:", response.status);
+          tracks = [];
         }
       } else {
         const response = await fetch(
