@@ -300,7 +300,8 @@
     <div id="playlistContainer"></div>
 
     <div class="refresh-container">
-      <button class="refresh-btn" onclick="refreshResults()" 
+      <!-- Το refresh button καλεί τη refreshResults() και μετά μεταφέρει το scroll στην κορυφή -->
+      <button class="refresh-btn" onclick="refreshResults(); window.scrollTo(0,0);" 
               data-en="Refresh" data-el="Ανανέωση">↻</button>
     </div>
    
@@ -320,7 +321,7 @@
   </div>
 
   <script>
-   const isLocal = window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1';
+    const isLocal = window.location.hostname.includes('localhost') || window.location.hostname === '127.0.0.1';
     const SPOTIFY_CLIENT_ID = '6f24397905834a03b7c0e82039d61ca1';
     const SPOTIFY_REDIRECT_URI = isLocal 
       ? 'http://localhost:8888/callback.html' 
@@ -440,14 +441,10 @@
         
         // 3. Ταξινόμηση αποτελεσμάτων
         const tracks = data.tracks.items.sort((a, b) => {
-          // Πρώτα πρωτότυπα (χωρίς remix/cover)
           const aIsOriginal = !a.name.toLowerCase().includes('remix') && !a.name.toLowerCase().includes('cover');
           const bIsOriginal = !b.name.toLowerCase().includes('remix') && !b.name.toLowerCase().includes('cover');
-          
           if (aIsOriginal && !bIsOriginal) return -1;
           if (!aIsOriginal && bIsOriginal) return 1;
-          
-          // Μετά δημοφιλότητα
           return b.popularity - a.popularity;
         });
 
