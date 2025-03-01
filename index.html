@@ -360,7 +360,7 @@
       authUrl.searchParams.append('client_id', SPOTIFY_CLIENT_ID);
       authUrl.searchParams.append('response_type', 'code');
       authUrl.searchParams.append('redirect_uri', SPOTIFY_REDIRECT_URI);
-      authUrl.searchParams.append('scope', 'user-read-private user-read-email playlist-read-private');
+      authUrl.searchParams.append('scope', 'user-read-private user-read-email streaming user-modify-playback-state');
       authUrl.searchParams.append('code_challenge_method', 'S256');
       authUrl.searchParams.append('code_challenge', codeChallenge);
       window.location.href = authUrl.toString();
@@ -454,7 +454,7 @@
               height="80"
               frameborder="0"
               allowtransparency="true"
-              allow="encrypted-media">
+              allow="encrypted-media; autoplay;">
             </iframe>
             <div class="social-share">
               <i class="fab fa-facebook social-icon" onclick="shareTrack('facebook', '${track.id}')"></i>
@@ -517,7 +517,7 @@
             <iframe src="https://open.spotify.com/embed/playlist/${playlist.id}" 
               width="100%" 
               height="380" 
-              allow="encrypted-media"
+              allow="encrypted-media; autoplay;"
               frameborder="0"
               allowtransparency="true">
             </iframe>
